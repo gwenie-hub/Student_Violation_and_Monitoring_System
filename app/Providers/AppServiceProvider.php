@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Laravel\Fortify\Contracts\LoginResponse;
-use App\Http\Responses\CustomLoginResponse;
+use Spatie\Permission\Middlewares\RoleMiddleware;
+use Spatie\Permission\Middlewares\PermissionMiddleware;
+use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
+use Illuminate\Routing\Router;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -16,13 +17,12 @@ class AppServiceProvider extends ServiceProvider
 {
     $this->app->singleton(LoginResponse::class, CustomLoginResponse::class);
 }
+public function boot(): void
+{
+    $router = app(Router::class);
 
-
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        //
-    }
+    $router->aliasMiddleware('role', RoleMiddleware::class);
+    $router->aliasMiddleware('permission', PermissionMiddleware::class);
+    $router->aliasMiddleware('role_or_permission', RoleOrPermissionMiddleware::class);
+}
 }
