@@ -14,6 +14,10 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
 
+// ✅ ADD THIS:
+use App\Http\Controllers\Auth\CustomAuthenticatedSessionController;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
@@ -36,13 +40,18 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
-
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
             return Limit::perMinute(5)->by($throttleKey);
         });
 
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
+
+        // ✅ Bind custom controller for login role-based redirect
+        $this->app->bind(
+            AuthenticatedSessionController::class,
+            CustomAuthenticatedSessionController::class
+        );
     }
 }
