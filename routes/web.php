@@ -71,7 +71,7 @@ Route::middleware([
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             abort_unless(auth()->user()->hasRole('school_admin'), 403);
-            return app(AdminDashboard::class);
+            return view('admin.dashboard'); // FIXED TO RETURN A VIEW
         })->name('admin.dashboard');
 
         Route::get('/users', function () {
