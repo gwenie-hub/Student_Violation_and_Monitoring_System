@@ -15,6 +15,9 @@ class Dashboard extends Component
 
     public function mount()
     {
+        // ✅ Manually check if user has the 'school_admin' role
+        abort_unless(auth()->user()?->hasRole('school_admin'), 403);
+
         try {
             $this->totalUsers = User::count();
             $this->totalStudents = Student::count();

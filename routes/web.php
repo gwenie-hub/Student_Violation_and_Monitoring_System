@@ -44,7 +44,7 @@ Route::get('/dashboard', function () {
     'verified',
 ])->name('dashboard');
 
-// ✅ Authenticated & Verified Routes
+// ✅ Authenticated & Verified Routes (Manual role checking inside closures/components)
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -52,63 +52,69 @@ Route::middleware([
 ])->group(function () {
 
     // ✅ SUPER ADMIN ROUTES
-    Route::prefix('super-admin')
-    ->middleware('role:super_admin') // ✅ good
-        ->group(function () {
-            Route::get('/dashboard', function () {
-                return view('super-admin.dashboard'); // View contains Livewire component
-            })->name('superadmin.dashboard');
-        });
+    Route::prefix('super-admin')->group(function () {
+        Route::get('/dashboard', function () {
+            abort_unless(auth()->user()->hasRole('super_admin'), 403);
+            return view('super-admin.dashboard');
+        })->name('superadmin.dashboard');
+    });
 
     // ✅ SCHOOL ADMIN ROUTES
-    Route::prefix('admin')
-        ->middleware('role:school_admin')
-        ->group(function () {
-            Route::get('/dashboard', AdminDashboard::class)->name('admin.dashboard');
-            Route::get('/users', UserManagement::class)->name('admin.users');
-            Route::get('/students', StudentManagement::class)->name('admin.students');
-        });
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', AdminDashboard::class)->name('admin.dashboard');
+        Route::get('/users', UserManagement::class)->name('admin.users');
+        Route::get('/students', StudentManagement::class)->name('admin.students');
+    });
 
     // ✅ PROFESSOR ROUTES
-    Route::middleware('role:professor')->group(function () {
-        Route::get('/violations/create', ViolationForm::class)->name('violations.create');
-        Route::get('/professor', fn () => view('professor'))->name('professor.dashboard');
-    });
+    Route::get('/violations/create', ViolationForm::class)->name('violations.create');
+    Route::get('/professor', function () {
+        abort_unless(auth()->user()->hasRole('professor'), 403);
+        return view('professor');
+    })->name('professor.dashboard');
 
     // ✅ DISCIPLINARY OFFICER ROUTES
-    Route::middleware('role:disciplinary_officer')->group(function () {
-        Route::get('/disciplinary/violations', ManageViolations::class)->name('disciplinary.violations');
-    });
+    Route::get('/disciplinary/violations', function () {
+        abort_unless(auth()->user()->hasRole('disciplinary_officer'), 403);
+        return app(ManageViolations::class);
+    })->name('disciplinary.violations');
 
     // ✅ GUIDANCE COUNSELOR ROUTES
-    Route::prefix('counselor')
-        ->middleware('role:guidance_counselor')
-        ->group(function () {
-            Route::get('/dashboard', fn () => view('counselor.dashboard'))->name('counselor.dashboard');
-            Route::get('/reports', CounselingReports::class)->name('counselor.reports');
-        });
+    Route::prefix('counselor')->group(function () {
+        Route::get('/dashboard', function () {
+            abort_unless(auth()->user()->hasRole('guidance_counselor'), 403);
+            return view('counselor.dashboard');
+        })->name('counselor.dashboard');
+
+        Route::get('/reports', CounselingReports::class)->name('counselor.reports');
+    });
 
     // ✅ PARENT ROUTES
-    Route::middleware('role:parent')->group(function () {
-        Route::get('/parent/dashboard', function () {
-            $student = auth()->user()->student;
-            return view('parent.dashboard', compact('student'));
-        })->name('parent.dashboard');
-    });
+    Route::get('/parent/dashboard', function () {
+        abort_unless(auth()->user()->hasRole('parent'), 403);
+        $student = auth()->user()->student;
+        return view('parent.dashboard', compact('student'));
+    })->name('parent.dashboard');
 
     // ✅ OTP ROUTES
     Route::get('/otp', [OtpController::class, 'showForm'])->name('otp.form');
     Route::post('/otp/send', [OtpController::class, 'send'])->name('otp.send');
     Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
 
-    // ✅ DEBUG/TEST ROUTES (Optional)
+    // ✅ DEBUG/TEST ROUTES
     Route::get('/session-test', fn () => tap(session(['test' => 'value']), fn () => 'Session set.'));
     Route::get('/session-check', fn () => session('test', 'nothing found'));
-    Route::middleware('role:super_admin')->get('/test-role', fn () => 'Role middleware is working!');
-    Route::get('/middleware-debug', fn () => response()->json(array_keys(App::make(Router::class)->getMiddleware())));
+
+    Route::get('/test-role', function () {
+        return auth()->user()->hasRole('super_admin') ? 'Role check works!' : abort(403);
+    });
+
+    Route::get('/middleware-debug', fn () =>
+        response()->json(array_keys(App::make(Router::class)->getMiddleware()))
+    );
 });
 
-// ✅ MANUAL LOGOUT (Fixes Jetstream redirect issue)
+// ✅ MANUAL LOGOUT (Jetstream-friendly)
 Route::post('/custom-logout', function () {
     Auth::logout();
     request()->session()->invalidate();
