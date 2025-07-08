@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('section');
-            $table->string('parent_email')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // connects to `users`
+            $table->string('student_number')->unique();
             $table->timestamps();
         });
+            
+        
     }
 
     /**
@@ -25,7 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('users');
     }
-    
 };
