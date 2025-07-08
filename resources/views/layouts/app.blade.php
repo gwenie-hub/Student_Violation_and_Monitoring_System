@@ -1,45 +1,54 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title', config('app.name', 'Laravel'))</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Styles -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
+</head>
+<body class="font-sans antialiased bg-gray-100 text-gray-900">
+    {{-- Optional Jetstream banner --}}
+    <x-banner />
 
-        <!-- Styles -->
-        @livewireStyles
-    </head>
-    <body class="font-sans antialiased">
-        <x-banner />
+    {{-- Navigation --}}
+    @auth
+        @livewire('navigation-menu')
+    @endauth
 
-        <div class="min-h-screen bg-gray-100">
-            @livewire('navigation-menu')
+    {{-- Page Header (Optional Section) --}}
+    @hasSection('header')
+        <header class="bg-white shadow">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                @yield('header')
+            </div>
+        </header>
+    @endif
 
-            <!-- Page Heading -->
-            @if (isset($header))
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endif
+    {{-- Page Content --}}
+    <main>
+        @yield('content')
+    </main>
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
-        </div>
-
-        @stack('modals')
-
-        @livewireScripts
-    </body>
+    @stack('modals')
+    @livewireScripts
+</body>
 </html>
+@extends('layouts.app')
+
+@section('title', 'Super Admin Dashboard')
+
+@section('content')
+    <div class="py-8 px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Super Admin Dashboard</h2>
+        {{-- Dashboard content here --}}
+    </div>
+@endsection
