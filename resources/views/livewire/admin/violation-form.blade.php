@@ -1,37 +1,24 @@
-<div class="p-6">
+<div>
     @if (session()->has('message'))
-        <div class="mb-4 text-green-600">{{ session('message') }}</div>
+        <div class="text-green-500">{{ session('message') }}</div>
     @endif
 
-    <h2 class="text-xl font-bold mb-4">Request Violation</h2>
+    <form wire:submit.prevent="submit">
+        <select wire:model="student_id" class="border rounded w-full p-2 mb-2">
+            <option value="">Select Student</option>
+            @foreach($students as $student)
+                <option value="{{ $student->id }}">{{ $student->name }}</option>
+            @endforeach
+        </select>
 
-    <form wire:submit.prevent="submit" class="space-y-4">
-        <div>
-            <label class="block">Student</label>
-            <select wire:model="student_id" class="w-full border p-2 rounded">
-                <option value="">-- Select Student --</option>
-                @foreach($students as $student)
-                    <option value="{{ $student->id }}">{{ $student->name }}</option>
-                @endforeach
-            </select>
-            @error('student_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </div>
+        <input wire:model="offense" type="text" class="border rounded w-full p-2 mb-2" placeholder="Offense" />
 
-        <div>
-            <label class="block">Violation Type</label>
-            <select wire:model="type" class="w-full border p-2 rounded">
-                <option value="minor">Minor</option>
-                <option value="major">Major</option>
-            </select>
-            @error('type') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </div>
+        <select wire:model="type" class="border rounded w-full p-2 mb-2">
+            <option value="">Select Type</option>
+            <option value="major">Major</option>
+            <option value="minor">Minor</option>
+        </select>
 
-        <div>
-            <label class="block">Description</label>
-            <textarea wire:model="description" class="w-full border p-2 rounded" rows="3"></textarea>
-            @error('description') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-        </div>
-
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Submit Violation</button>
+        <button class="bg-blue-500 text-white px-4 py-2 rounded">Submit</button>
     </form>
 </div>

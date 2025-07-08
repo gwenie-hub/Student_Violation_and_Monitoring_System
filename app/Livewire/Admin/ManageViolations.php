@@ -7,74 +7,24 @@ use App\Models\Violation;
 
 class ManageViolations extends Component
 {
-    public $violations;
-    public $filterType = 'all';
+    public $filter = null;
 
-    public $editId;
-    public $editType;
-    public $editDescription;
-
-    public function mount()
+    public function accept($violationId)
     {
-        $this->loadViolations();
+        Violation::where('id', $violationId)->update(['status' => 'accepted']);
     }
 
-    public function updatedFilterType()
+    public function decline($violationId)
     {
-        $this->loadViolations();
-    }
-
-    public function loadViolations()
-    {
-        $query = Violation::with('student')->latest();
-        if ($this->filterType !== 'all') {
-            $query->where('type', $this->filterType);
-        }
-        $this->violations = $query->get();
-    }
-
-    public function updateStatus($id, $status)
-    {
-        $violation = Violation::findOrFail($id);
-        $violation->status = $status;
-        $violation->save();
-
-        $this->loadViolations();
-        session()->flash('message', 'Violation status updated.');
-    }
-
-    public function edit($id)
-    {
-        $violation = Violation::findOrFail($id);
-        $this->editId = $violation->id;
-        $this->editType = $violation->type;
-        $this->editDescription = $violation->description;
-    }
-
-    public function saveEdit()
-    {
-        $this->validate([
-            'editType' => 'required|in:major,minor',
-            'editDescription' => 'required|string|max:500',
-        ]);
-
-        $violation = Violation::findOrFail($this->editId);
-        $violation->type = $this->editType;
-        $violation->description = $this->editDescription;
-        $violation->save();
-
-        $this->reset(['editId', 'editType', 'editDescription']);
-        $this->loadViolations();
-        session()->flash('message', 'Violation updated successfully.');
-    }
-
-    public function cancelEdit()
-    {
-        $this->reset(['editId', 'editType', 'editDescription']);
+        Violation::where('id', $violationId)->update(['status' => 'declined']);
     }
 
     public function render()
     {
-        return view('livewire.admin.manage-violations');
+        $violations = Violation::with('student')
+            ->when($this->filter, fn($query) => $query->where('type', $this->filter))
+            ->latest()->get();
+
+        return view('livewire.admin.manage-violations', compact('violations'));
     }
 }

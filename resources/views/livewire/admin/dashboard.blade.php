@@ -5,6 +5,8 @@
         <div class="bg-red-100 text-red-600 p-2 rounded mb-4">{{ $message }}</div>
     @enderror
 
+
+        </div>
         <div class="bg-white shadow rounded p-4">
             <h2 class="text-lg font-semibold">Total Students</h2>
             <p class="text-3xl">{{ $totalStudents }}</p>
