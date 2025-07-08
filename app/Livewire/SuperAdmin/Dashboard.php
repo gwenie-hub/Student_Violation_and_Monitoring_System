@@ -1,3 +1,5 @@
+<?php 
+
 namespace App\Http\Livewire\SuperAdmin;
 
 use Livewire\Component;
