@@ -3,30 +3,24 @@
 namespace App\Http\Responses;
 
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use Illuminate\Support\Facades\Auth;
 
 class CustomLoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
     {
-        $user = $request->user();
+        $user = Auth::user();
 
         if ($user->hasRole('super_admin')) {
-            return redirect()->route('superadmin.dashboard');
+            return redirect()->intended('/super-admin/dashboard');
+        } elseif ($user->hasRole('guidance_counselor')) {
+            return redirect()->intended('/guidance/dashboard');
+        } elseif ($user->hasRole('disciplinary_officer')) {
+            return redirect()->intended('/officer/dashboard');
+        } elseif ($user->hasRole('professor')) {
+            return redirect()->intended('/professor/dashboard');
         }
 
-        if ($user->hasRole('counselor')) {
-            return redirect()->route('counselor.dashboard');
-        }
-
-        if ($user->hasRole('professor')) {
-            return redirect()->route('professor.dashboard');
-        }
-
-        if ($user->hasRole('parent')) {
-            return redirect('/parent/dashboard');
-        }
-
-        // Fallback redirect
-        return redirect('/login')->with('error', 'No dashboard found for your role.');
+        return redirect()->intended('/dashboard');
     }
 }
