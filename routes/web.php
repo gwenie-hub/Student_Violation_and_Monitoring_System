@@ -12,6 +12,7 @@ use App\Http\Livewire\{
     Admin\UserManagement,
     Admin\StudentManagement,
     Admin\Dashboard as AdminDashboard,
+    Admin\ManageViolations as AdminManageViolations,
     Counselor\CounselingReports,
     Auth\OtpVerify
 };
@@ -71,7 +72,7 @@ Route::middleware([
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             abort_unless(auth()->user()->hasRole('school_admin'), 403);
-            return view('admin.dashboard'); // FIXED TO RETURN A VIEW
+            return view('admin.dashboard');
         })->name('admin.dashboard');
 
         Route::get('/users', function () {
@@ -83,6 +84,12 @@ Route::middleware([
             abort_unless(auth()->user()->hasRole('school_admin'), 403);
             return app(StudentManagement::class);
         })->name('admin.students');
+
+        // ✅ Added Violation Management for School Admin
+        Route::get('/violations', function () {
+            abort_unless(auth()->user()->hasRole('school_admin'), 403);
+            return app(AdminManageViolations::class);
+        })->name('admin.violations');
     });
 
     // ✅ PROFESSOR
