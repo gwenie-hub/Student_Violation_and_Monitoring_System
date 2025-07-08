@@ -16,6 +16,9 @@ use App\Http\Livewire\{
     Auth\OtpVerify
 };
 
+use App\Models\User;
+use App\Models\Student;
+use App\Models\Violation;
 use App\Http\Controllers\Auth\OtpController;
 
 // ✅ Redirect base URL to login
@@ -55,7 +58,12 @@ Route::middleware([
     Route::prefix('super-admin')->group(function () {
         Route::get('/dashboard', function () {
             abort_unless(auth()->user()->hasRole('super_admin'), 403);
-            return view('super-admin.dashboard');
+
+            return view('super-admin.dashboard', [
+                'totalUsers' => User::count(),
+                'totalStudents' => Student::count(),
+                'totalViolations' => Violation::count(),
+            ]);
         })->name('superadmin.dashboard');
     });
 
