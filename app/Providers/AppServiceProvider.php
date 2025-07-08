@@ -2,13 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider; // ✅ Add this
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
 use Spatie\Permission\Middlewares\RoleMiddleware;
 use Spatie\Permission\Middlewares\PermissionMiddleware;
 use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
-use Laravel\Fortify\Contracts\LoginResponse; // If you're using Fortify
-use App\Actions\Fortify\CustomLoginResponse; // If you're using custom login
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(LoginResponse::class, CustomLoginResponse::class);
+        // No custom login response registered
     }
 
     /**
