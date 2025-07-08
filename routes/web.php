@@ -12,7 +12,6 @@ use App\Http\Livewire\{
     Admin\UserManagement,
     Admin\StudentManagement,
     Admin\Dashboard as AdminDashboard,
-    SuperAdmin\Dashboard as SuperAdminDashboard,
     Counselor\CounselingReports,
     Auth\OtpVerify
 };
@@ -33,7 +32,9 @@ Route::middleware([
     Route::prefix('super-admin')
         ->middleware('role:super_admin')
         ->group(function () {
-            Route::get('/dashboard', SuperAdminDashboard::class)->name('superadmin.dashboard');
+            Route::get('/dashboard', function () {
+                return view('super-admin.dashboard'); // Blade view that includes the Livewire component
+            })->name('superadmin.dashboard');
         });
 
     // ✅ SCHOOL ADMIN ROUTES
