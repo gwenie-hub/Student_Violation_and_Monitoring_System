@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Router;
+
 use App\Http\Livewire\{
     ViolationForm,
     ViolationTable,
@@ -14,53 +15,54 @@ use App\Http\Livewire\{
     Counselor\CounselingReports,
     Auth\OtpVerify
 };
+
 use App\Http\Controllers\Auth\OtpController;
 
-// ✅ Default Jetstream route (homepage redirects to login)
+// Redirect base URL to login
 Route::get('/', fn () => redirect()->route('login'));
 
-// ✅ Jetstream default authenticated dashboard
+// Jetstream default dashboard route
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-    'verified'
+    'verified',
 ])->group(function () {
     Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
 });
 
-// ✅ Role-based route grouping
+// Role-based route grouping
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-    'verified'
+    'verified',
 ])->group(function () {
 
-    // ✅ SUPER ADMIN Dashboard Route
+    // ✅ SUPER ADMIN DASHBOARD (Only users with role: super_admin can access)
     Route::prefix('super-admin')
-        ->middleware('role:super_admin')
+        ->middleware('role:super_admin') // Spatie middleware for role check
         ->group(function () {
             Route::get('/dashboard', SuperAdminDashboard::class)->name('superadmin.dashboard');
         });
 
-    // ✅ PROFESSOR Routes
+    // ✅ PROFESSOR
     Route::middleware('role:professor')->group(function () {
         Route::get('/violations/create', ViolationForm::class)->name('violations.create');
         Route::get('/professor', fn () => view('professor'))->name('professor.dashboard');
     });
 
-    // ✅ SCHOOL ADMIN Routes
+    // ✅ SCHOOL ADMIN
     Route::middleware('role:school_admin')->group(function () {
         Route::get('/violations', ViolationTable::class)->name('violations.index');
         Route::get('/admin/users', UserManagement::class)->name('admin.users');
         Route::get('/admin/students', StudentManagement::class)->name('admin.students');
     });
 
-    // ✅ DISCIPLINARY OFFICER Routes
-    Route::get('/disciplinary/violations', ManageViolations::class)
-        ->middleware('role:disciplinary_officer')
-        ->name('disciplinary.violations');
+    // ✅ DISCIPLINARY OFFICER
+    Route::middleware('role:disciplinary_officer')->group(function () {
+        Route::get('/disciplinary/violations', ManageViolations::class)->name('disciplinary.violations');
+    });
 
-    // ✅ GUIDANCE COUNSELOR Routes
+    // ✅ GUIDANCE COUNSELOR
     Route::prefix('counselor')
         ->middleware('role:guidance_counselor')
         ->group(function () {
@@ -68,25 +70,27 @@ Route::middleware([
             Route::get('/reports', CounselingReports::class)->name('counselor.reports');
         });
 
-    // ✅ PARENT Dashboard
-    Route::middleware('role:parent')->get('/parent/dashboard', function () {
-        $student = auth()->user()->student;
-        return view('parent.dashboard', compact('student'));
-    })->name('parent.dashboard');
+    // ✅ PARENT
+    Route::middleware('role:parent')->group(function () {
+        Route::get('/parent/dashboard', function () {
+            $student = auth()->user()->student;
+            return view('parent.dashboard', compact('student'));
+        })->name('parent.dashboard');
+    });
 
-    // ✅ OTP Verification
+    // ✅ OTP ROUTES
     Route::get('/otp', [OtpController::class, 'showForm'])->name('otp.form');
     Route::post('/otp/send', [OtpController::class, 'send'])->name('otp.send');
     Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
 
-    // ✅ Debug/Test Routes
+    // ✅ DEBUG/TEST ROUTES (Optional)
     Route::get('/session-test', fn () => tap(session(['test' => 'value']), fn () => 'Session set.'));
     Route::get('/session-check', fn () => session('test', 'nothing found'));
     Route::middleware('role:super_admin')->get('/test-role', fn () => 'Role middleware is working!');
     Route::get('/middleware-debug', fn () => response()->json(array_keys(App::make(Router::class)->getMiddleware())));
 });
 
-// ✅ Manual logout route to fix login-refresh issue
+// ✅ MANUAL LOGOUT (to fix Jetstream redirect issues)
 Route::post('/custom-logout', function () {
     Auth::logout();
     request()->session()->invalidate();
