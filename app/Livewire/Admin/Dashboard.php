@@ -3,26 +3,17 @@
 namespace App\Http\Livewire\Admin;
 
 use Livewire\Component;
-use App\Models\User;
 use App\Models\Student;
 use App\Models\Violation;
 
 class Dashboard extends Component
 {
-    public $totalUsers = 0;
-    public $totalStudents = 0;
-    public $totalViolations = 0;
+    public $totalStudents, $totalViolations;
 
     public function mount()
     {
-        try {
-            $this->totalUsers = User::count();
-            $this->totalStudents = Student::count();
-            $this->totalViolations = Violation::count();
-        } catch (\Exception $e) {
-            // Optional: log error or handle gracefully
-            $this->addError('load', 'Error loading dashboard statistics.');
-        }
+        $this->totalStudents = Student::count();
+        $this->totalViolations = Violation::count();
     }
 
     public function render()

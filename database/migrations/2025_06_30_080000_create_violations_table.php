@@ -13,17 +13,13 @@ return new class extends Migration
 {
     Schema::create('violations', function (Blueprint $table) {
         $table->id();
-
-        $table->foreignId('student_id')
-              ->constrained()
-              ->onDelete('cascade'); // Deletes violations if student is deleted
-
-        $table->enum('type', ['major', 'minor'])->index();
-        $table->string('description');
-        $table->enum('status', ['pending', 'accepted', 'declined'])->default('pending')->index();
-
+        $table->foreignId('student_id')->constrained();
+        $table->string('type'); // 'major' or 'minor'
+        $table->text('description');
+        $table->enum('status', ['pending', 'accepted', 'declined'])->default('pending');
         $table->timestamps();
     });
+    
 }
     /**
      * Reverse the migrations.
