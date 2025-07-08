@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Router;
 use App\Http\Livewire\{
     ViolationForm,
@@ -80,3 +81,11 @@ Route::middleware([
     Route::middleware('role:super_admin')->get('/test-role', fn () => 'Role middleware is working!');
     Route::get('/middleware-debug', fn () => response()->json(array_keys(App::make(Router::class)->getMiddleware())));
 });
+
+// ✅ Manual logout route to fix login-refresh issue
+Route::post('/custom-logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/login');
+})->name('custom.logout');
