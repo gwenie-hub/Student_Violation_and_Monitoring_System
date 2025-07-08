@@ -69,28 +69,27 @@ Route::middleware([
     });
 
     // ✅ SCHOOL ADMIN
-    Route::prefix('admin')->group(function () {
-        Route::get('/dashboard', function () {
-            abort_unless(auth()->user()->hasRole('school_admin'), 403);
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', function () {
+        abort_unless(auth()->user()->hasRole('school_admin'), 403);
+        return app(AdminDashboard::class); // ✅ fixed
+    })->name('admin.dashboard');
 
-        Route::get('/users', function () {
-            abort_unless(auth()->user()->hasRole('school_admin'), 403);
-            return app(UserManagement::class);
-        })->name('admin.users');
+    Route::get('/users', function () {
+        abort_unless(auth()->user()->hasRole('school_admin'), 403);
+        return app(UserManagement::class);
+    })->name('admin.users');
 
-        Route::get('/students', function () {
-            abort_unless(auth()->user()->hasRole('school_admin'), 403);
-            return app(StudentManagement::class);
-        })->name('admin.students');
+    Route::get('/students', function () {
+        abort_unless(auth()->user()->hasRole('school_admin'), 403);
+        return app(StudentManagement::class);
+    })->name('admin.students');
 
-        // ✅ Added Violation Management for School Admin
-        Route::get('/violations', function () {
-            abort_unless(auth()->user()->hasRole('school_admin'), 403);
-            return app(AdminManageViolations::class);
-        })->name('admin.violations');
-    });
+    Route::get('/violations', function () {
+        abort_unless(auth()->user()->hasRole('school_admin'), 403);
+        return app(AdminManageViolations::class);
+    })->name('admin.violations');
+});
 
     // ✅ PROFESSOR
     Route::get('/violations/create', function () {
