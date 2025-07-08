@@ -12,24 +12,30 @@ class Dashboard extends Component
     public $totalUsers = 0;
     public $totalStudents = 0;
     public $totalViolations = 0;
+    public $hasLoadError = false;
 
     public function mount()
     {
-        // ✅ Manually check if user has the 'school_admin' role
-        abort_unless(auth()->user()?->hasRole('school_admin'), 403);
-
+        // Fetch data safely
         try {
             $this->totalUsers = User::count();
             $this->totalStudents = Student::count();
             $this->totalViolations = Violation::count();
         } catch (\Exception $e) {
-            // Optional: log error or handle gracefully
-            $this->addError('load', 'Error loading dashboard statistics.');
+            $this->hasLoadError = true;
         }
+    }
+
+    public function authorize()
+    {
+        // Laravel 12+ Livewire supports this for auth checks
+        abort_unless(auth()->user()?->hasRole('school_admin'), 403);
     }
 
     public function render()
     {
-        return view('livewire.admin.dashboard');
+        return view('livewire.admin.dashboard', [
+            'hasLoadError' => $this->hasLoadError
+        ]);
     }
 }
