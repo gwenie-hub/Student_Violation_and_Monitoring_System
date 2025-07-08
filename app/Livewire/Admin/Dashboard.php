@@ -3,15 +3,19 @@
 namespace App\Http\Livewire\Admin;
 
 use Livewire\Component;
+use App\Models\User;
 use App\Models\Student;
 use App\Models\Violation;
 
 class Dashboard extends Component
 {
-    public $totalStudents, $totalViolations;
+    public $totalUsers;
+    public $totalStudents;
+    public $totalViolations;
 
     public function mount()
     {
+        $this->totalUsers = User::count();
         $this->totalStudents = Student::count();
         $this->totalViolations = Violation::count();
     }
@@ -21,3 +25,4 @@ class Dashboard extends Component
         return view('livewire.admin.dashboard');
     }
 }
+
