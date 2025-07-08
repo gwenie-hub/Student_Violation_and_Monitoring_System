@@ -21,6 +21,29 @@ use App\Http\Controllers\Auth\OtpController;
 // ✅ Redirect base URL to login
 Route::get('/', fn () => redirect()->route('login'));
 
+// ✅ Dashboard Redirection Based on Role
+Route::get('/dashboard', function () {
+    $user = auth()->user();
+
+    if ($user->hasRole('super_admin')) {
+        return redirect()->route('superadmin.dashboard');
+    } elseif ($user->hasRole('school_admin')) {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->hasRole('professor')) {
+        return redirect()->route('professor.dashboard');
+    } elseif ($user->hasRole('guidance_counselor')) {
+        return redirect()->route('counselor.dashboard');
+    } elseif ($user->hasRole('parent')) {
+        return redirect()->route('parent.dashboard');
+    }
+
+    abort(403, 'Unauthorized');
+})->middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->name('dashboard');
+
 // ✅ Authenticated & Verified Routes
 Route::middleware([
     'auth:sanctum',
@@ -33,7 +56,7 @@ Route::middleware([
         ->middleware('role:super_admin')
         ->group(function () {
             Route::get('/dashboard', function () {
-                return view('super-admin.dashboard'); // Blade view that includes the Livewire component
+                return view('super-admin.dashboard'); // View contains Livewire component
             })->name('superadmin.dashboard');
         });
 
