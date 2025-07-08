@@ -35,6 +35,13 @@ Route::middleware([
     'verified'
 ])->group(function () {
 
+    // ✅ SUPER ADMIN Dashboard Route (Only super_admin role can access)
+    Route::prefix('super-admin')
+        ->middleware('role:super_admin')
+        ->group(function () {
+            Route::get('/dashboard', SuperAdminDashboard::class)->name('superadmin.dashboard');
+        });
+
     // Professor
     Route::middleware('role:professor')->group(function () {
         Route::get('/violations/create', ViolationForm::class)->name('violations.create');
@@ -53,16 +60,13 @@ Route::middleware([
         ->middleware('role:disciplinary_officer')
         ->name('disciplinary.violations');
 
-    // Super Admin
-    Route::prefix('super-admin')->middleware('role:super_admin')->group(function () {
-        Route::get('/dashboard', SuperAdminDashboard::class)->name('superadmin.dashboard');
-    });
-
     // Guidance Counselor
-    Route::prefix('counselor')->middleware('role:guidance_counselor')->group(function () {
-        Route::get('/dashboard', fn () => view('counselor.dashboard'))->name('counselor.dashboard');
-        Route::get('/reports', CounselingReports::class)->name('counselor.reports');
-    });
+    Route::prefix('counselor')
+        ->middleware('role:guidance_counselor')
+        ->group(function () {
+            Route::get('/dashboard', fn () => view('counselor.dashboard'))->name('counselor.dashboard');
+            Route::get('/reports', CounselingReports::class)->name('counselor.reports');
+        });
 
     // Parent
     Route::middleware('role:parent')->get('/parent/dashboard', function () {
