@@ -11,58 +11,52 @@ use App\Http\Livewire\{
     Disciplinary\ManageViolations,
     Admin\UserManagement,
     Admin\StudentManagement,
-    Admin\Dashboard as SuperAdminDashboard,
+    Admin\Dashboard as AdminDashboard,
+    SuperAdmin\Dashboard as SuperAdminDashboard,
     Counselor\CounselingReports,
     Auth\OtpVerify
 };
 
 use App\Http\Controllers\Auth\OtpController;
 
-// Redirect base URL to login
+// ✅ Redirect base URL to login
 Route::get('/', fn () => redirect()->route('login'));
 
-// Jetstream default dashboard route
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
-});
-
-// Role-based route grouping
+// ✅ Authenticated & Verified Routes
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
 
-    // ✅ SUPER ADMIN DASHBOARD (Only users with role: super_admin can access)
+    // ✅ SUPER ADMIN ROUTES
     Route::prefix('super-admin')
-        ->middleware('role:super_admin') // Spatie middleware for role check
+        ->middleware('role:super_admin')
         ->group(function () {
             Route::get('/dashboard', SuperAdminDashboard::class)->name('superadmin.dashboard');
         });
 
-    // ✅ PROFESSOR
+    // ✅ SCHOOL ADMIN ROUTES
+    Route::prefix('admin')
+        ->middleware('role:school_admin')
+        ->group(function () {
+            Route::get('/dashboard', AdminDashboard::class)->name('admin.dashboard');
+            Route::get('/users', UserManagement::class)->name('admin.users');
+            Route::get('/students', StudentManagement::class)->name('admin.students');
+        });
+
+    // ✅ PROFESSOR ROUTES
     Route::middleware('role:professor')->group(function () {
         Route::get('/violations/create', ViolationForm::class)->name('violations.create');
         Route::get('/professor', fn () => view('professor'))->name('professor.dashboard');
     });
 
-    // ✅ SCHOOL ADMIN
-    Route::middleware('role:school_admin')->group(function () {
-        Route::get('/violations', ViolationTable::class)->name('violations.index');
-        Route::get('/admin/users', UserManagement::class)->name('admin.users');
-        Route::get('/admin/students', StudentManagement::class)->name('admin.students');
-    });
-
-    // ✅ DISCIPLINARY OFFICER
+    // ✅ DISCIPLINARY OFFICER ROUTES
     Route::middleware('role:disciplinary_officer')->group(function () {
         Route::get('/disciplinary/violations', ManageViolations::class)->name('disciplinary.violations');
     });
 
-    // ✅ GUIDANCE COUNSELOR
+    // ✅ GUIDANCE COUNSELOR ROUTES
     Route::prefix('counselor')
         ->middleware('role:guidance_counselor')
         ->group(function () {
@@ -70,7 +64,7 @@ Route::middleware([
             Route::get('/reports', CounselingReports::class)->name('counselor.reports');
         });
 
-    // ✅ PARENT
+    // ✅ PARENT ROUTES
     Route::middleware('role:parent')->group(function () {
         Route::get('/parent/dashboard', function () {
             $student = auth()->user()->student;
@@ -90,7 +84,7 @@ Route::middleware([
     Route::get('/middleware-debug', fn () => response()->json(array_keys(App::make(Router::class)->getMiddleware())));
 });
 
-// ✅ MANUAL LOGOUT (to fix Jetstream redirect issues)
+// ✅ MANUAL LOGOUT (Fixes Jetstream redirect issue)
 Route::post('/custom-logout', function () {
     Auth::logout();
     request()->session()->invalidate();

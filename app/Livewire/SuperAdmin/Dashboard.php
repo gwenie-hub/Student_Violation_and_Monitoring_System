@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Http\Livewire\Admin;
+namespace App\Http\Livewire\SuperAdmin;
 
 use Livewire\Component;
 use App\Models\User;
@@ -16,7 +14,7 @@ class Dashboard extends Component
     public function mount()
     {
         try {
-            $this->totalUsers = User::whereHas('roles', fn ($q) => $q->where('name', '!=', 'super_admin'))->count();
+            $this->totalUsers = User::count();
             $this->totalStudents = Student::count();
             $this->totalViolations = Violation::count();
         } catch (\Exception $e) {
@@ -26,6 +24,6 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.admin.dashboard');
+        return view('livewire.super-admin.dashboard');
     }
 }
