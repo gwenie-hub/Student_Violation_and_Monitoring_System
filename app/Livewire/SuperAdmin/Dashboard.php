@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Livewire\SuperAdmin;
 
@@ -15,13 +15,9 @@ class Dashboard extends Component
 
     public function mount()
     {
-        try {
-            $this->totalUsers = User::count();
-            $this->totalStudents = Student::count();
-            $this->totalViolations = Violation::count();
-        } catch (\Exception $e) {
-            $this->addError('load', 'Error loading dashboard statistics.');
-        }
+        $this->totalUsers = User::count();
+        $this->totalStudents = Student::count();
+        $this->totalViolations = Violation::count();
     }
 
     public function render()
