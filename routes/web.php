@@ -53,7 +53,7 @@ Route::middleware([
 
     // ✅ SUPER ADMIN ROUTES
     Route::prefix('super-admin')
-        ->middleware('role:super_admin')
+    ->middleware('role:super_admin') // ✅ good
         ->group(function () {
             Route::get('/dashboard', function () {
                 return view('super-admin.dashboard'); // View contains Livewire component
