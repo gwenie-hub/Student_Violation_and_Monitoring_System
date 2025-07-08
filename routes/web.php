@@ -16,10 +16,10 @@ use App\Http\Livewire\{
 };
 use App\Http\Controllers\Auth\OtpController;
 
-// Default Jetstream route (homepage redirects to login)
+// ✅ Default Jetstream route (homepage redirects to login)
 Route::get('/', fn () => redirect()->route('login'));
 
-// Jetstream default authenticated dashboard
+// ✅ Jetstream default authenticated dashboard
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -28,39 +28,39 @@ Route::middleware([
     Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
 });
 
-// Role-based route grouping
+// ✅ Role-based route grouping
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
 
-    // ✅ SUPER ADMIN Dashboard Route (Only super_admin role can access)
+    // ✅ SUPER ADMIN Dashboard Route
     Route::prefix('super-admin')
         ->middleware('role:super_admin')
         ->group(function () {
             Route::get('/dashboard', SuperAdminDashboard::class)->name('superadmin.dashboard');
         });
 
-    // Professor
+    // ✅ PROFESSOR Routes
     Route::middleware('role:professor')->group(function () {
         Route::get('/violations/create', ViolationForm::class)->name('violations.create');
         Route::get('/professor', fn () => view('professor'))->name('professor.dashboard');
     });
 
-    // School Admin
+    // ✅ SCHOOL ADMIN Routes
     Route::middleware('role:school_admin')->group(function () {
         Route::get('/violations', ViolationTable::class)->name('violations.index');
         Route::get('/admin/users', UserManagement::class)->name('admin.users');
         Route::get('/admin/students', StudentManagement::class)->name('admin.students');
     });
 
-    // Disciplinary Officer
+    // ✅ DISCIPLINARY OFFICER Routes
     Route::get('/disciplinary/violations', ManageViolations::class)
         ->middleware('role:disciplinary_officer')
         ->name('disciplinary.violations');
 
-    // Guidance Counselor
+    // ✅ GUIDANCE COUNSELOR Routes
     Route::prefix('counselor')
         ->middleware('role:guidance_counselor')
         ->group(function () {
@@ -68,18 +68,18 @@ Route::middleware([
             Route::get('/reports', CounselingReports::class)->name('counselor.reports');
         });
 
-    // Parent
+    // ✅ PARENT Dashboard
     Route::middleware('role:parent')->get('/parent/dashboard', function () {
         $student = auth()->user()->student;
         return view('parent.dashboard', compact('student'));
     })->name('parent.dashboard');
 
-    // OTP Routes
+    // ✅ OTP Verification
     Route::get('/otp', [OtpController::class, 'showForm'])->name('otp.form');
     Route::post('/otp/send', [OtpController::class, 'send'])->name('otp.send');
     Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
 
-    // Debug/Test Routes
+    // ✅ Debug/Test Routes
     Route::get('/session-test', fn () => tap(session(['test' => 'value']), fn () => 'Session set.'));
     Route::get('/session-check', fn () => session('test', 'nothing found'));
     Route::middleware('role:super_admin')->get('/test-role', fn () => 'Role middleware is working!');

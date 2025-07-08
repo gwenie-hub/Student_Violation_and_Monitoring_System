@@ -9,13 +9,20 @@ use App\Models\Violation;
 
 class Dashboard extends Component
 {
-    public $totalUsers, $totalStudents, $totalViolations;
+    public $totalUsers = 0;
+    public $totalStudents = 0;
+    public $totalViolations = 0;
 
     public function mount()
     {
-        $this->totalUsers = User::count();
-        $this->totalStudents = Student::count();
-        $this->totalViolations = Violation::count();
+        try {
+            $this->totalUsers = User::count();
+            $this->totalStudents = Student::count();
+            $this->totalViolations = Violation::count();
+        } catch (\Exception $e) {
+            // Optional: log error or handle gracefully
+            $this->addError('load', 'Error loading dashboard statistics.');
+        }
     }
 
     public function render()
@@ -23,4 +30,3 @@ class Dashboard extends Component
         return view('livewire.admin.dashboard');
     }
 }
-    
