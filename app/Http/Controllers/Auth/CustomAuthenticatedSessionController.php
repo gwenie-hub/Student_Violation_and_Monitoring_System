@@ -2,36 +2,34 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController as BaseController;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+use Laravel\Fortify\Http\Requests\LoginRequest;
+use Laravel\Fortify\Contracts\LoginResponse;
 
-class CustomAuthenticatedSessionController extends BaseController
+class CustomAuthenticatedSessionController extends AuthenticatedSessionController
 {
-    public function store(Request $request)
+    /**
+     * Override login to redirect by role.
+     */
+    public function store(LoginRequest $request): LoginResponse
     {
-        // Call Fortify's default login
-        $response = parent::store($request);
+        $this->loginPipeline($request)->then(function ($request) {
+            //
+        });
 
-        // Redirect based on role
-        $user = Auth::user();
+        $user = $request->user();
 
+        // ✅ Redirect based on role
         if ($user->hasRole('super_admin')) {
-            return redirect()->route('superadmin.dashboard');
-        } elseif ($user->hasRole('school_admin')) {
-            return redirect()->route('admin.users');
-        } elseif ($user->hasRole('professor')) {
-            return redirect()->route('violations.create');
+            return redirect()->intended('/super-admin/dashboard');
         } elseif ($user->hasRole('guidance_counselor')) {
-            return redirect()->route('counselor.dashboard');
+            return redirect()->intended('/guidance/dashboard');
         } elseif ($user->hasRole('disciplinary_officer')) {
-            return redirect()->route('disciplinary.violations');
-        } elseif ($user->hasRole('parent')) {
-            return redirect()->route('parent.dashboard');
+            return redirect()->intended('/officer/dashboard');
+        } elseif ($user->hasRole('professor')) {
+            return redirect()->intended('/professor/dashboard');
+        } else {
+            return redirect()->intended('/dashboard');
         }
-
-        // Fallback
-        return redirect()->route('dashboard');
     }
 }
