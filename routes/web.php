@@ -44,14 +44,14 @@ Route::get('/dashboard', function () {
     'verified',
 ])->name('dashboard');
 
-// ✅ Authenticated & Verified Routes (Manual role checking inside closures/components)
+// ✅ Authenticated & Verified Routes
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
 
-    // ✅ SUPER ADMIN ROUTES
+    // ✅ SUPER ADMIN
     Route::prefix('super-admin')->group(function () {
         Route::get('/dashboard', function () {
             abort_unless(auth()->user()->hasRole('super_admin'), 403);
@@ -59,49 +59,67 @@ Route::middleware([
         })->name('superadmin.dashboard');
     });
 
-    // ✅ SCHOOL ADMIN ROUTES
+    // ✅ SCHOOL ADMIN
     Route::prefix('admin')->group(function () {
-        Route::get('/dashboard', AdminDashboard::class)->name('admin.dashboard');
-        Route::get('/users', UserManagement::class)->name('admin.users');
-        Route::get('/students', StudentManagement::class)->name('admin.students');
+        Route::get('/dashboard', function () {
+            abort_unless(auth()->user()->hasRole('school_admin'), 403);
+            return app(AdminDashboard::class);
+        })->name('admin.dashboard');
+
+        Route::get('/users', function () {
+            abort_unless(auth()->user()->hasRole('school_admin'), 403);
+            return app(UserManagement::class);
+        })->name('admin.users');
+
+        Route::get('/students', function () {
+            abort_unless(auth()->user()->hasRole('school_admin'), 403);
+            return app(StudentManagement::class);
+        })->name('admin.students');
     });
 
-    // ✅ PROFESSOR ROUTES
-    Route::get('/violations/create', ViolationForm::class)->name('violations.create');
+    // ✅ PROFESSOR
+    Route::get('/violations/create', function () {
+        abort_unless(auth()->user()->hasRole('professor'), 403);
+        return app(ViolationForm::class);
+    })->name('violations.create');
+
     Route::get('/professor', function () {
         abort_unless(auth()->user()->hasRole('professor'), 403);
         return view('professor');
     })->name('professor.dashboard');
 
-    // ✅ DISCIPLINARY OFFICER ROUTES
+    // ✅ DISCIPLINARY OFFICER
     Route::get('/disciplinary/violations', function () {
         abort_unless(auth()->user()->hasRole('disciplinary_officer'), 403);
         return app(ManageViolations::class);
     })->name('disciplinary.violations');
 
-    // ✅ GUIDANCE COUNSELOR ROUTES
+    // ✅ GUIDANCE COUNSELOR
     Route::prefix('counselor')->group(function () {
         Route::get('/dashboard', function () {
             abort_unless(auth()->user()->hasRole('guidance_counselor'), 403);
             return view('counselor.dashboard');
         })->name('counselor.dashboard');
 
-        Route::get('/reports', CounselingReports::class)->name('counselor.reports');
+        Route::get('/reports', function () {
+            abort_unless(auth()->user()->hasRole('guidance_counselor'), 403);
+            return app(CounselingReports::class);
+        })->name('counselor.reports');
     });
 
-    // ✅ PARENT ROUTES
+    // ✅ PARENT
     Route::get('/parent/dashboard', function () {
         abort_unless(auth()->user()->hasRole('parent'), 403);
         $student = auth()->user()->student;
         return view('parent.dashboard', compact('student'));
     })->name('parent.dashboard');
 
-    // ✅ OTP ROUTES
+    // ✅ OTP
     Route::get('/otp', [OtpController::class, 'showForm'])->name('otp.form');
     Route::post('/otp/send', [OtpController::class, 'send'])->name('otp.send');
     Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
 
-    // ✅ DEBUG/TEST ROUTES
+    // ✅ DEBUG / TEST ROUTES
     Route::get('/session-test', fn () => tap(session(['test' => 'value']), fn () => 'Session set.'));
     Route::get('/session-check', fn () => session('test', 'nothing found'));
 
@@ -114,7 +132,7 @@ Route::middleware([
     );
 });
 
-// ✅ MANUAL LOGOUT (Jetstream-friendly)
+// ✅ MANUAL LOGOUT
 Route::post('/custom-logout', function () {
     Auth::logout();
     request()->session()->invalidate();
