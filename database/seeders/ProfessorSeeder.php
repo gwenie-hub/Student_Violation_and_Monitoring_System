@@ -11,7 +11,7 @@ class ProfessorSeeder extends Seeder
     public function run(): void
     {
         // ✅ Safe: Create or get existing role
-        $role = Role::firstOrCreate(['name' => 'professor']);
+        $role = Role::firstOrCreate(['name' => 'Professor']);
 
         // Create user
         $user = User::firstOrCreate(
@@ -20,7 +20,7 @@ class ProfessorSeeder extends Seeder
         );
 
         // Assign role if not already assigned
-        if (! $user->hasRole('professor')) {
+        if (! $user->hasRole('Professor')) {
             $user->assignRole($role);
         }
     }
