@@ -9,12 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::table('violations', function (Blueprint $table) {
-    $table->string('sanction')->nullable(); // e.g., Verbal, Written, Suspension
-});
-
+    Schema::table('violations', function (Blueprint $table) {
+        $table->string('sanction')->nullable();
+        $table->enum('notify_status', ['success', 'failed'])->nullable();
+    });
     }
 
     /**

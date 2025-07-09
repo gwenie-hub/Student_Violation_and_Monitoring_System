@@ -39,6 +39,8 @@ Route::get('/dashboard', function () {
         return redirect()->route('counselor.dashboard');
     } elseif ($user->hasRole('parent')) {
         return redirect()->route('parent.dashboard');
+    } elseif ($user->hasRole('disciplinary_committee')) {
+        return redirect()->route('disciplinary.violations');
     }
 
     abort(403, 'Unauthorized');
@@ -100,16 +102,43 @@ Route::middleware([
         $violations = Violation::with('student')
             ->where('reported_by', auth()->id())
             ->latest()
-            ->paginate(10); // ✅ This enables links() in Blade
+            ->get();
 
         return view('professor.dashboard', compact('violations'));
     })->name('professor.dashboard');
 
-    // ✅ DISCIPLINARY OFFICER
-    Route::get('/disciplinary/violations', function () {
-        abort_unless(auth()->user()->hasRole('disciplinary_officer'), 403);
-        return app(ManageViolations::class);
-    })->name('disciplinary.violations');
+    // ✅ DISCIPLINARY COMMITTEE
+    Route::prefix('disciplinary')->middleware(['auth', 'role:disciplinary_committee'])->group(function () {
+        // View all violations
+        Route::get('/violations', function () {
+            $violations = Violation::with('student')->latest()->paginate(10);
+            return view('disciplinary.violations', compact('violations'));
+        })->name('disciplinary.violations');
+    
+        // Edit violation
+        Route::get('/violations/{violation}/edit', function ($id) {
+            $violation = Violation::with('student')->findOrFail($id);
+            return view('disciplinary.edit', compact('violation'));
+        })->name('disciplinary.edit');
+    
+        // Update violation with sanction and notify
+        Route::put('/violations/{violation}', function (Request $request, $id) {
+            $request->validate(['sanction' => 'required|string']);
+    
+            $violation = Violation::findOrFail($id);
+            $violation->sanction = $request->sanction;
+    
+            try {
+                $violation->notify_status = 'success';
+            } catch (\Exception $e) {
+                $violation->notify_status = 'failed';
+            }
+    
+            $violation->save();
+    
+            return redirect()->route('disciplinary.violations')->with('success', 'Sanction applied.');
+        })->name('disciplinary.update');
+    });
 
     // ✅ GUIDANCE COUNSELOR
     Route::prefix('counselor')->group(function () {
@@ -127,13 +156,9 @@ Route::middleware([
     // ✅ PARENT
     Route::get('/parent/dashboard', function () {
         abort_unless(auth()->user()->hasRole('parent'), 403);
-    
         $student = auth()->user()->student;
-        $violations = $student ? $student->violations()->latest()->get() : collect();
-    
-        return view('parent.dashboard', compact('student', 'violations'));
+        return view('parent.dashboard', compact('student'));
     })->name('parent.dashboard');
-    
 
     // ✅ OTP
     Route::get('/otp', [OtpController::class, 'showForm'])->name('otp.form');
