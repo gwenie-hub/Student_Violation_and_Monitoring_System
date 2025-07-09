@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire\Admin;
 
-use Livewire\Features\SupportComponentTraits\Component as BaseComponent;
+use Livewire\Component;
 use App\Models\Violation;
 
-class ManageViolations extends BaseComponent
+class ManageViolations extends Component
 {
     public $filter = null;
 
