@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire\Admin;
 
-use Livewire\Component;
+use Livewire\Features\SupportComponentTraits\Component as BaseComponent;
 use App\Models\Violation;
 
-class ManageViolations extends Component
+class ManageViolations extends BaseComponent
 {
     public $filter = null;
 
@@ -29,7 +29,7 @@ class ManageViolations extends Component
             $query->where('type', 'minor');
         }
 
-        $violations = $query->orderBy('created_at', 'desc')->get();
+        $violations = $query->latest()->get();
 
         return view('livewire.admin.manage-violations', compact('violations'));
     }
