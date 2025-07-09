@@ -1,34 +1,42 @@
-<x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+@extends('layouts.app') {{-- or layouts.guest if using Jetstream --}}
 
-        <div class="mb-4 text-sm text-gray-600">
-            {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+@section('content')
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-600 to-blue-600 px-4">
+    <div class="w-full max-w-md space-y-6">
+        {{-- Logo --}}
+        <div class="text-center">
+            <a href="/">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-16 h-16 mx-auto rounded-full shadow-lg">
+            </a>
+            <h2 class="mt-4 text-2xl font-bold text-black">Forgot Password</h2>
+            <p class="text-sm text-black opacity-80">Enter your email to receive a password reset link.</p>
         </div>
 
-        @session('status')
-            <div class="mb-4 font-medium text-sm text-green-600">
-                {{ $value }}
-            </div>
-        @endsession
+        {{-- Forgot Password Form --}}
+        <div class="bg-white bg-opacity-90 p-6 rounded-lg shadow-lg text-gray-900">
+            @if (session('status'))
+                <div class="mb-4 font-medium text-sm text-green-600">
+                    {{ session('status') }}
+                </div>
+            @endif
 
-        <x-validation-errors class="mb-4" />
+            <form method="POST" action="{{ route('password.email') }}">
+                @csrf
 
-        <form method="POST" action="{{ route('password.email') }}">
-            @csrf
+                {{-- Email --}}
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input id="email" type="email" name="email" required autofocus class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring focus:ring-blue-300">
+                </div>
 
-            <div class="block">
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <x-button>
-                    {{ __('Email Password Reset Link') }}
-                </x-button>
-            </div>
-        </form>
-    </x-authentication-card>
-</x-guest-layout>
+                {{-- Submit --}}
+                <div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Send Password Reset Link
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
