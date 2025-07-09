@@ -21,6 +21,15 @@ class ManageViolations extends Component
 
     public function render()
     {
+        $query = Violation::query();
+
+        if ($this->filter === 'major') {
+            $query->where('type', 'major');
+        } elseif ($this->filter === 'minor') {
+            $query->where('type', 'minor');
+        }
+
+        $violations = $query->orderBy('created_at', 'desc')->get();
 
         return view('livewire.admin.manage-violations', compact('violations'));
     }

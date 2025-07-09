@@ -1,4 +1,7 @@
 <div>
+    <h2 class="text-xl font-bold mb-4">Manage Student Violations</h2>
+    <p>This is the ManageViolations Livewire component.</p>
+
     <div class="mb-4">
         <select wire:model="filter" class="border p-2 rounded">
             <option value="">All Violations</option>
@@ -18,23 +21,26 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($violations as $violation)
-            <tr class="border-b">
-                <td class="px-4 py-2">{{ $violation->student->name }}</td>
-                <td class="px-4 py-2">{{ $violation->offense }}</td>
-                <td class="px-4 py-2 capitalize">{{ $violation->type }}</td>
-                <td class="px-4 py-2 capitalize">{{ $violation->status }}</td>
-                <td class="px-4 py-2 space-x-2">
-                    <button wire:click="accept({{ $violation->id }})" class="bg-green-500 text-white px-2 py-1 rounded">Accept</button>
-                    <button wire:click="decline({{ $violation->id }})" class="bg-red-500 text-white px-2 py-1 rounded">Decline</button>
-                </td>
-            </tr>
-            @endforeach
+            @forelse($violations as $violation)
+                <tr class="border-b">
+                    <td class="px-4 py-2">{{ $violation->student->name ?? 'N/A' }}</td>
+                    <td class="px-4 py-2">{{ $violation->offense }}</td>
+                    <td class="px-4 py-2 capitalize">{{ $violation->type }}</td>
+                    <td class="px-4 py-2 capitalize">{{ $violation->status }}</td>
+                    <td class="px-4 py-2 space-x-2">
+                        @if ($violation->status === 'pending')
+                            <button wire:click="accept({{ $violation->id }})" class="bg-green-500 text-white px-2 py-1 rounded">Accept</button>
+                            <button wire:click="decline({{ $violation->id }})" class="bg-red-500 text-white px-2 py-1 rounded">Decline</button>
+                        @else
+                            <span class="text-gray-500">No actions</span>
+                        @endif
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-gray-500">No violations found.</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
-
-    <div>
-    <h2 class="text-xl font-bold mb-4">Manage Student Violations</h2>
-    <p>This is the ManageViolations Livewire component.</p>
-</div>
 </div>
