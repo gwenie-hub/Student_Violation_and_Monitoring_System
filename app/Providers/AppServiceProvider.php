@@ -26,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
     $router->aliasMiddleware('role_or_permission', RoleOrPermissionMiddleware::class);
 
     // ✅ Register Livewire component manually
-    Livewire::component('admin.manage-violations', ManageViolations::class);
+    Livewire::component('admin.manage-violations', \App\Http\Livewire\Admin\ManageViolations::class);
+
 }
 }
