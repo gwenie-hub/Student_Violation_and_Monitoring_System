@@ -143,11 +143,6 @@ Route::middleware([
     );
 });
 
-    Route::get('/test-component', function () {
-        return \Livewire\Livewire::mount('admin.manage-violations')->html();
-});
-
-
 // ✅ MANUAL LOGOUT
 Route::post('/custom-logout', function () {
     Auth::logout();
