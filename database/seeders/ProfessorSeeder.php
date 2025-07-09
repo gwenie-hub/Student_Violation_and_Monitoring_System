@@ -15,8 +15,8 @@ class ProfessorSeeder extends Seeder
 
         // Create user
         $user = User::firstOrCreate(
-            ['email' => 'professor@example.com'],
-            ['name' => 'Prof. Easy', 'password' => bcrypt('password')]
+            ['email' => 'philippedelgado75@gmail.com'],
+            ['name' => 'Prof. Easy', 'password' => bcrypt('123papamo')]
         );
 
         // Assign role if not already assigned
