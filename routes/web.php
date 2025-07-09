@@ -57,11 +57,11 @@ Route::middleware([
     'verified',
 ])->group(function () {
 
-    // ✅ SUPER ADMIN
-    Route::prefix('super-admin')->group(function () {
+    Route::middleware(['auth', 'verified'])->prefix('super-admin')->group(function () {
         Route::get('/dashboard', function () {
-            abort_unless(auth()->user()->hasRole('super_admin'), 403);
-
+            // Ensure user is authenticated before role check
+            abort_unless(auth()->check() && auth()->user()->hasRole('super_admin'), 403);
+    
             return view('super-admin.dashboard', [
                 'totalUsers' => User::count(),
                 'totalStudents' => Student::count(),

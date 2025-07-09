@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- Or change to layouts.guest if you're using Jetstream/Fortify layout --}}
+@extends('layouts.app') {{-- or layouts.guest if you're using Jetstream/Fortify --}}
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-600 to-blue-600 py-12 px-4 sm:px-6 lg:px-8">
@@ -8,7 +8,7 @@
         <div class="text-center">
             <a href="/">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-16 h-16 mx-auto rounded-full shadow-lg">
-
+            </a> {{-- 🛠️ You forgot to close this anchor tag --}}
         </div>
 
         {{-- Login Form --}}
