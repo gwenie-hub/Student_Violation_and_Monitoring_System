@@ -20,7 +20,6 @@ class SuperAdminSeeder extends Seeder
             [
                 'name' => 'Super Admin',
                 'password' => Hash::make('gwen100803'),
-                'email_verified_at' => now(),
             ]
         );
 
