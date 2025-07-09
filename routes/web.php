@@ -14,7 +14,6 @@ use App\Http\Livewire\{
     Admin\Dashboard as AdminDashboard,
     Admin\ManageViolations as AdminManageViolations,
     Counselor\CounselingReports,
-    Professor\Dashboard as ProfessorDashboard,
     Auth\OtpVerify
 };
 
@@ -73,7 +72,7 @@ Route::middleware([
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             abort_unless(auth()->user()->hasRole('school_admin'), 403);
-            return view('admin.dashboard');
+            return view('admin.dashboard'); // ✅ Use Blade view
         })->name('admin.dashboard');
 
         Route::get('/users', fn () => app(UserManagement::class))
@@ -90,13 +89,15 @@ Route::middleware([
     });
 
     // ✅ PROFESSOR
-    Route::prefix('professor')->middleware('role:professor')->group(function () {
-        Route::get('/dashboard', ProfessorDashboard::class)->name('professor.dashboard');
+    Route::get('/violations/create', function () {
+        abort_unless(auth()->user()->hasRole('professor'), 403);
+        return app(ViolationForm::class);
+    })->name('violations.create');
 
-        Route::get('/violations/create', function () {
-            return app(ViolationForm::class);
-        })->name('violations.create');
-    });
+    Route::get('/professor', function () {
+        abort_unless(auth()->user()->hasRole('professor'), 403);
+        return view('professor');
+    })->name('professor.dashboard');
 
     // ✅ DISCIPLINARY OFFICER
     Route::get('/disciplinary/violations', function () {
@@ -105,18 +106,24 @@ Route::middleware([
     })->name('disciplinary.violations');
 
     // ✅ GUIDANCE COUNSELOR
-    Route::prefix('counselor')->middleware('role:guidance_counselor')->group(function () {
-        Route::get('/dashboard', fn () => view('counselor.dashboard'))->name('counselor.dashboard');
-        Route::get('/reports', fn () => app(CounselingReports::class))->name('counselor.reports');
+    Route::prefix('counselor')->group(function () {
+        Route::get('/dashboard', function () {
+            abort_unless(auth()->user()->hasRole('guidance_counselor'), 403);
+            return view('counselor.dashboard');
+        })->name('counselor.dashboard');
+
+        Route::get('/reports', function () {
+            abort_unless(auth()->user()->hasRole('guidance_counselor'), 403);
+            return app(CounselingReports::class);
+        })->name('counselor.reports');
     });
 
     // ✅ PARENT
-    Route::prefix('parent')->middleware('role:parent')->group(function () {
-        Route::get('/dashboard', function () {
-            $student = auth()->user()->student;
-            return view('parent.dashboard', compact('student'));
-        })->name('parent.dashboard');
-    });
+    Route::get('/parent/dashboard', function () {
+        abort_unless(auth()->user()->hasRole('parent'), 403);
+        $student = auth()->user()->student;
+        return view('parent.dashboard', compact('student'));
+    })->name('parent.dashboard');
 
     // ✅ OTP
     Route::get('/otp', [OtpController::class, 'showForm'])->name('otp.form');
