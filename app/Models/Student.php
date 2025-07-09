@@ -14,4 +14,15 @@ class Student extends Model
         'section',
         'parent_email',
     ];
+
+    // app/Models/Student.php
+    public function parentUser()
+    {
+        return $this->hasOne(User::class);
+    }
+
+    public function violations()
+    {
+        return $this->hasMany(Violation::class);
+    }
 }

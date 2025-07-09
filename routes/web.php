@@ -127,9 +127,13 @@ Route::middleware([
     // ✅ PARENT
     Route::get('/parent/dashboard', function () {
         abort_unless(auth()->user()->hasRole('parent'), 403);
+    
         $student = auth()->user()->student;
-        return view('parent.dashboard', compact('student'));
+        $violations = $student ? $student->violations()->latest()->get() : collect();
+    
+        return view('parent.dashboard', compact('student', 'violations'));
     })->name('parent.dashboard');
+    
 
     // ✅ OTP
     Route::get('/otp', [OtpController::class, 'showForm'])->name('otp.form');

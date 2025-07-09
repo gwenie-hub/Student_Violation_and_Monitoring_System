@@ -5,20 +5,39 @@
         </h2>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <h1 class="text-2xl font-bold mb-4">Welcome, {{ auth()->user()->name }}</h1>
+    @extends('layouts.app')
 
-            @if($student)
-                <h2 class="text-xl mb-2">Your Child: {{ $student->name }}</h2>
-                <ul class="list-disc ml-6">
-                    @foreach ($student->violations as $violation)
-                        <li>{{ $violation->violation_type }} - {{ $violation->status }}</li>
-                    @endforeach
-                </ul>
+@section('content')
+    <div class="container">
+        <h1>Welcome, {{ auth()->user()->name }}</h1>
+
+        @if ($student)
+            <h2>Child: {{ $student->student_number }}</h2>
+
+            @if ($violations->isEmpty())
+                <p>No violations recorded for your child.</p>
             @else
-                <p>No student record linked to your account.</p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Violation</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($violations as $violation)
+                            <tr>
+                                <td>{{ $violation->created_at->format('Y-m-d') }}</td>
+                                <td>{{ $violation->type }}</td>
+                                <td>{{ $violation->description }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             @endif
-        </div>
+        @else
+            <p>No student linked to your account.</p>
+        @endif
     </div>
-</x-app-layout>
+@endsection

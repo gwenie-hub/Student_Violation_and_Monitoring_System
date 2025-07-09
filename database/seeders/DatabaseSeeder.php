@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
         SuperAdminSeeder::class,    // Seed the super admin user
         SchoolAdminSeeder::class,
     ]);
-    
+
     $this->call([
-        RoleSeeder::class,
-        ParentSeeder::class,
+    ParentSeeder::class,
     ]);
+
 }
 
 
