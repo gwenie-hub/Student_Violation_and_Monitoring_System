@@ -21,9 +21,6 @@ class ManageViolations extends Component
 
     public function render()
     {
-        $violations = Violation::with('student')
-            ->when($this->filter, fn($query) => $query->where('type', $this->filter))
-            ->latest()->get();
 
         return view('livewire.admin.manage-violations', compact('violations'));
     }

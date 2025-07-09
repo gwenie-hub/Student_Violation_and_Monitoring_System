@@ -32,4 +32,9 @@
             @endforeach
         </tbody>
     </table>
+
+    <div>
+    <h2 class="text-xl font-bold mb-4">Manage Student Violations</h2>
+    <p>This is the ManageViolations Livewire component.</p>
+</div>
 </div>
