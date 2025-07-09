@@ -27,7 +27,5 @@ class AppServiceProvider extends ServiceProvider
 
     // ✅ Register Livewire component manually
     Livewire::component('admin.manage-violations', ManageViolations::class);
-
-    dd('AppServiceProvider boot running');
 }
 }
