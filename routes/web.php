@@ -72,7 +72,7 @@ Route::middleware([
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', function () {
             abort_unless(auth()->user()->hasRole('school_admin'), 403);
-            return view('admin.dashboard'); // ✅ Use Blade view
+            return view('admin.dashboard');
         })->name('admin.dashboard');
 
         Route::get('/users', fn () => app(UserManagement::class))
@@ -96,7 +96,13 @@ Route::middleware([
 
     Route::get('/professor', function () {
         abort_unless(auth()->user()->hasRole('professor'), 403);
-        return view('professor');
+
+        $violations = Violation::with('student')
+            ->where('reported_by', auth()->id())
+            ->latest()
+            ->paginate(10); // ✅ This enables links() in Blade
+
+        return view('professor.dashboard', compact('violations'));
     })->name('professor.dashboard');
 
     // ✅ DISCIPLINARY OFFICER

@@ -35,4 +35,17 @@
     <div class="mt-4">
         {{ $violations->links() }}
     </div>
+
+        @extends('layouts.app')
+
+    @section('content')
+    <div class="container mx-auto mt-4">
+        <h1 class="text-2xl font-bold">Professor Dashboard</h1>
+        <p>Welcome, Professor {{ Auth::user()->name }}!</p>
+        <a href="{{ route('violations.create') }}" class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Create Violation
+        </a>
+    </div>
+    @endsection
+
 </div>
