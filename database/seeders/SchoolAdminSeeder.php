@@ -18,7 +18,7 @@ class SchoolAdminSeeder extends Seeder
             [
                 'name' => 'School Admin',
                 'email' => 'philippedelgado20@gmail.com',
-                'password' => Hash::make('pphilippe20'),
+                ['name' => 'Sir. Christian', 'password' => bcrypt('pphilippe20')]
             ]
         );
 

@@ -19,7 +19,7 @@ class SuperAdminSeeder extends Seeder
             ['email' => 'lezzahgwenn@gmail.com'], // unique identifier
             [
                 'name' => 'Super Admin',
-                'password' => Hash::make('gwen100803'),
+                ['name' => 'Maam. Gwen', 'password' => bcrypt('gwen100803')]
             ]
         );
 
