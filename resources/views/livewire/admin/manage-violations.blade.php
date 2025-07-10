@@ -1,5 +1,5 @@
 <div class="mt-6">
-    <h2 class="text-xl font-bold mb-4">Student Violation Records</h2>
+    <h2 class="text-lg font-semibold mb-4">Student Violation Records</h2>
 
     <div class="mb-4">
         <label class="mr-2 font-semibold">Filter by Type:</label>

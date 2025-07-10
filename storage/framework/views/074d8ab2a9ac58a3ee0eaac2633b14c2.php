@@ -1,13 +1,13 @@
-@extends('layouts.app')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <div class="min-h-screen flex bg-gradient-to-br from-blue-700 via-purple-600 to-red-500 text-black">
 
     <!-- Sidebar -->
     <aside class="w-64 bg-white shadow-md p-6 border-r">
         <!-- Logo -->
         <div class="flex justify-center mb-6">
-            <img src="{{ asset('images/logo1.png') }}" alt="Logo" class="w-16 h-16 rounded-full shadow-md">
+            <img src="<?php echo e(asset('images/logo1.png')); ?>" alt="Logo" class="w-16 h-16 rounded-full shadow-md">
         </div>
 
         <!-- Navigation -->
@@ -23,8 +23,8 @@
 
             <!-- Functional Logout -->
             <li class="mt-4">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('logout')); ?>">
+                    <?php echo csrf_field(); ?>
                     <button type="submit" class="w-full text-left text-red-600 hover:bg-red-100 px-3 py-2 rounded">
                         Logout
                     </button>
@@ -40,20 +40,22 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <h3 class="text-lg font-semibold">Total Users</h3>
-                <p class="text-3xl font-bold text-blue-600">{{ $totalUsers }}</p>
+                <p class="text-3xl font-bold text-blue-600"><?php echo e($totalUsers); ?></p>
             </div>
 
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <h3 class="text-lg font-semibold">Total Students</h3>
-                <p class="text-3xl font-bold text-green-600">{{ $totalStudents }}</p>
+                <p class="text-3xl font-bold text-green-600"><?php echo e($totalStudents); ?></p>
             </div>
 
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <h3 class="text-lg font-semibold">Total Violations</h3>
-                <p class="text-3xl font-bold text-red-600">{{ $totalViolations }}</p>
+                <p class="text-3xl font-bold text-red-600"><?php echo e($totalViolations); ?></p>
             </div>
         </div>
     </main>
 
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\Student_Violation_and_Monitoring_System\resources\views/super-admin/dashboard.blade.php ENDPATH**/ ?>
