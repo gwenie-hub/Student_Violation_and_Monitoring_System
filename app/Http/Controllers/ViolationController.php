@@ -10,8 +10,11 @@ class ViolationController extends Controller
 {
     public function index()
     {
-        $violations = Violation::with('student')->get();
-        return view('violations.index', compact('violations'));
+        $violations = Violation::with(['student', 'reporter'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('disciplinary.violations', compact('violations'));
     }
 
     public function create()

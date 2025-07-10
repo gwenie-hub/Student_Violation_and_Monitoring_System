@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Router;
+use App\Http\Controllers\SuperAdmin\DashboardController; 
 
 use App\Http\Livewire\{
     ViolationForm,
@@ -72,6 +73,7 @@ Route::middleware([
             ]);
         })->name('superadmin.dashboard');
     });
+    Route::get('/super-admin/dashboard', [DashboardController::class, 'index'])->name('superadmin.dashboard');
 
     // ✅ SCHOOL ADMIN
     Route::prefix('admin')->group(function () {
@@ -158,6 +160,9 @@ Route::middleware([
             $violations = \App\Models\Violation::with('student')->latest()->paginate(10);
             return view('disciplinary.violations', compact('violations'));
         })->name('disciplinary.violations');
+
+        Route::get('/violations', [ViolationController::class, 'index'])->name('violations.index');
+
     
         // ✅ Edit Violation
         Route::get('/violations/{violation}/edit', function ($id) {
