@@ -43,5 +43,15 @@ class ViolationController extends Controller
 
         return redirect()->route('violations.index');
     }
+
+    public function myViolations()
+    {
+        $violations = Violation::where('reported_by', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+    
+        return view('professor.violations.index', compact('violations'));
+    }
+
 }
     
