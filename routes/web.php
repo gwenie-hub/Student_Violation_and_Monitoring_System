@@ -7,6 +7,7 @@ use Illuminate\Routing\Router;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\ViolationController;
+use App\Models\SystemLog;
 use App\Http\Livewire\{
     ViolationForm,
     ViolationTable,
@@ -18,14 +19,19 @@ use App\Http\Livewire\{
     Counselor\CounselingReports,
     Auth\OtpVerify,
     Admin\RoleManagement,
-    SuperAdmin\AddUser
+    SuperAdmin\AddUser,
+    SuperAdmin\ManageAccounts,
+    SuperAdmin\StudentRecords
 };
+
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Violation;
 
-// ✅ Redirect base URL to login
-Route::get('/', fn () => redirect()->route('login'));
+// 🏠 Public Welcome Page
+Route::get('/', function () {
+    return view('welcome');
+});
 
 // ✅ Dashboard Redirection Based on Role
 Route::get('/dashboard', function () {
@@ -59,35 +65,31 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         ]);
     })->name('superadmin.dashboard');
 
-    Route::middleware(['auth', 'verified'])->group(function () {
-        Route::get('/super-admin/users/create', AddUser::class)->name('superadmin.add-user');
-    });
+    Route::get('/users/create', \App\Http\Livewire\SuperAdmin\AddUser::class)
+        ->name('superadmin.add-user');
 
     Route::get('/users/manage', function () {
         abort_unless(auth()->user()->hasRole('super_admin'), 403);
         return view('super-admin.manage-accounts');
     })->name('superadmin.manage-accounts');
 
-    Route::get('/students/records', function () {
-        abort_unless(auth()->user()->hasRole('super_admin'), 403);
-        return view('super-admin.student-records');
-    })->name('superadmin.student-records');
+    Route::get('/student_records', StudentRecords::class)
+        ->name('superadmin.student-records');
 
     Route::get('/system/logs', function () {
-        abort_unless(auth()->user()->hasRole('super_admin'), 403);
-        return view('super-admin.system-logs');
+        $logs = \App\Models\SystemLog::with('user')->latest()->paginate(10);
+        return view('super-admin.system-logs', compact('logs'));
     })->name('superadmin.system-logs');
 
+    // ✅ CORRECTED reports route — no nested prefix!
     Route::get('/reports', function () {
-        abort_unless(auth()->user()->hasRole('super_admin'), 403);
-        return view('super-admin.reports-status');
+        $reports = Violation::with('student')->latest()->paginate(10);
+        return view('super-admin.reports-status', compact('reports'));
     })->name('superadmin.reports-status');
 
-    // Optional: alias for backward compatibility if your sidebar uses this
     Route::get('/reports/redirect', fn () => redirect()->route('superadmin.reports-status'))
         ->name('reports.index');
 });
-    
     
 
     // ✅ SCHOOL ADMIN

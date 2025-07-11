@@ -1,9 +1,5 @@
-@extends('layouts.app')
+@extends('layouts.app') {{-- Or whatever layout you use --}}
 
 @section('content')
-<div class="p-6">
-    <h2 class="text-2xl font-bold mb-4">Student Records</h2>
-
-    <livewire:admin.student-management />
-</div>
+    <livewire:super-admin.student-records />
 @endsection

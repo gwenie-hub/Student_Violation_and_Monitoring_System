@@ -9,6 +9,8 @@ use Spatie\Permission\Http\Middleware\PermissionMiddleware;
 use Spatie\Permission\Http\Middleware\RoleOrPermissionMiddleware;
 use Livewire\Livewire;
 use App\Http\Livewire\Admin\ManageViolations;
+use Illuminate\Support\Facades\Blade;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +29,8 @@ class AppServiceProvider extends ServiceProvider
 
     // ✅ Register Livewire component manually
     Livewire::component('admin.manage-violations', \App\Http\Livewire\Admin\ManageViolations::class);
+    Blade::component('authentication-card', \App\View\Components\AuthenticationCard::class);
+    Blade::component('authentication-card-logo', \App\View\Components\AuthenticationCardLogo::class);
 
 }
 }

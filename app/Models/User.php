@@ -75,4 +75,12 @@ class User extends Authenticatable
         return $this->belongsTo(Student::class);
     }
 
+
+
+    public function violations()
+    {
+        return $this->hasMany(\App\Models\Violation::class);
+    }
+
+
 }

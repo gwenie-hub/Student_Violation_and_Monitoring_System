@@ -2,26 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Violation Monitoring System</title>
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
     <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
 
 </head>
-<body class="bg-gray-100 text-gray-900">
-    <div class="flex min-h-screen">
-        
-        
-        <?php echo $__env->yieldContent('sidebar'); ?>
-
-        
-        <div class="flex-1">
-            
-            
-            
-            <main class="p-6">
-                <?php echo $__env->yieldContent('content'); ?>
-            </main>
+<body>
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <?php echo $__env->yieldContent('content'); ?>  
         </div>
     </div>
 

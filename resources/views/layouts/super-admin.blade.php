@@ -8,7 +8,7 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    {{ $slot }}
+    @yield('content')
 
     @livewireScripts
 </body>
