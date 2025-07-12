@@ -3,11 +3,16 @@
 namespace App\Http\Livewire\Admin;
 
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 
 class RoleManagement extends Component
 {
     public function render()
     {
-        return view('livewire.admin.role-management');
+        $roles = Role::all();
+
+        return view('livewire.admin.role-management', [
+            'roles' => $roles,
+        ]);
     }
 }

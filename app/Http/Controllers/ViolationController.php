@@ -32,9 +32,8 @@ class ViolationController extends Controller
         ]);
 
         $colorMap = [
-            'low' => 'green',
-            'medium' => 'orange',
-            'high' => 'red',
+            'Minor' => 'green',
+            'Major' => 'red',
         ];
 
         Violation::create([
@@ -54,6 +53,21 @@ class ViolationController extends Controller
             ->get();
     
         return view('professor.violations.index', compact('violations'));
+    }
+
+    public function filterByStatus($status)
+    {
+    $violations = Violation::where('status', $status)->get();
+
+    return view('violations.filtered', compact('violations', 'status'));
+    }
+
+    public function destroy($id)
+    {
+    $violation = Violation::findOrFail($id);
+    $violation->delete();
+
+    return redirect()->back()->with('success', 'Violation deleted successfully.');
     }
 
 }

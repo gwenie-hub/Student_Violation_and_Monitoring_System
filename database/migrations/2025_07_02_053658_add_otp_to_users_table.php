@@ -9,9 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('otp')->nullable();
+            $table->string('otp_code')->nullable();
             $table->timestamp('otp_expires_at')->nullable();
+            $table->boolean('is_otp_verified')->default(false);
         });
+        
     }
     
 

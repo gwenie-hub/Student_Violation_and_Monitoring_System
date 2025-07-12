@@ -2,14 +2,6 @@
 
 @section('sidebar')
 <aside class="w-64 bg-white shadow-md p-6 border-r min-h-screen">
-    {{-- Logo --}}
-    <div class="flex justify-center mb-6">
-        <img src="{{ asset('images/logo2.png') }}" alt="Logo" class="h-16 w-16">
-    </div>
-
-    {{-- Role Title --}}
-    <h2 class="text-xl font-semibold text-center mb-4 text-gray-800">Disciplinary Committee</h2>
-
     {{-- Sidebar Links --}}
     <ul class="space-y-2 text-black">
         <li>
@@ -22,7 +14,6 @@
                 Student Violations
             </a>
         </li>
-        {{-- Removed "Sanction Decisions" link because route is undefined --}}
         <li>
             <a href="{{ route('disciplinary.reports') }}" class="block px-3 py-2 rounded hover:bg-gray-100">
                 Reports
@@ -37,4 +28,11 @@
         <li class="mt-4">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="w-fu
+                <button type="submit" class="w-full text-left px-3 py-2 rounded hover:bg-gray-100">
+                    Logout
+                </button>
+            </form>
+        </li>
+    </ul>
+</aside>
+@endsection

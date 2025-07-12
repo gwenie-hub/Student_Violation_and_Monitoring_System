@@ -13,7 +13,8 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * The path to the "home" route for your application.
      */
-    public const HOME = '/login'; // if you want to force going to login after auth
+    public const HOME = '/otp-verify'; // redirect after login
+
 
     /**
      * Define your route model bindings, pattern filters, etc.

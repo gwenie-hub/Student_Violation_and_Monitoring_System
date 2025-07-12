@@ -54,13 +54,24 @@
 @endsection
 
 @section('content')
-    <div class="flex flex-col flex-1 ml-4 mt-4">
-        {{-- Page Title --}}
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Student Violation Records</h1>
+    <div class="p-6">
+        <h1 class="text-2xl font-bold mb-6">Dashboard Overview</h1>
 
-        {{-- Main content --}}
-        <div class="bg-white rounded-xl shadow p-6">
-            @livewire('admin.manage-violations')
+        {{-- Violation Status Cards --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <a href="{{ route('violations.status', ['status' => 'approved']) }}">
+                <div class="bg-green-500 text-black p-6 rounded-lg shadow hover:bg-green-600 transition">
+                    <h2 class="text-xl font-semibold">Approved Violations</h2>
+                    <p class="mt-2">View all approved violations</p>
+                </div>
+            </a>
+
+            <a href="{{ route('violations.status', ['status' => 'pending']) }}">
+                <div class="bg-yellow-400 text-black p-6 rounded-lg shadow hover:bg-yellow-500 transition">
+                    <h2 class="text-xl font-semibold">Pending Violations</h2>
+                    <p class="mt-2">Review all pending violations</p>
+                </div>
+            </a>
         </div>
     </div>
 @endsection

@@ -1,11 +1,18 @@
-<div class="max-w-md mx-auto mt-10">
-    <h1 class="text-xl font-bold mb-4">Verify OTP</h1>
+<div class="max-w-md mx-auto mt-20 p-6 bg-white shadow rounded">
+    <h2 class="text-2xl font-bold mb-4 text-center">OTP Verification</h2>
 
-    @if (session('error'))
-        <div class="text-red-600 mb-2">{{ session('error') }}</div>
+    @if (session()->has('error'))
+        <div class="bg-red-100 text-red-600 px-4 py-2 rounded mb-4">
+            {{ session('error') }}
+        </div>
     @endif
 
-    <input type="text" wire:model="otp" maxlength="6" placeholder="Enter 6-digit OTP" class="border p-2 w-full mb-2">
+    <form wire:submit.prevent="verify">
+        <label for="otp" class="block mb-2 text-sm font-medium text-gray-700">Enter OTP</label>
+        <input wire:model="otp" type="text" id="otp" class="w-full border px-4 py-2 rounded mb-4" required>
 
-    <button wire:click="verify" class="bg-blue-600 text-white px-4 py-2 rounded">Verify</button>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+            Verify
+        </button>
+    </form>
 </div>

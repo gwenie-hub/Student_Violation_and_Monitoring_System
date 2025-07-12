@@ -1,46 +1,36 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-6">
+<div class="p-6 bg-gray-100 min-h-screen">
+    <h1 class="text-2xl font-semibold mb-4">Reports</h1>
 
-    <a href="{{ route('superadmin.dashboard') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
-        <!-- Arrow Left Icon -->
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
-        </svg>
-        Back to Dashboard
-    </a>
-
-    <h2 class="text-2xl font-bold mb-4 text-gray-800">Reports & Status Logs</h2>
-
-    @if ($reports->isEmpty())
-        <div class="bg-yellow-100 text-yellow-800 px-4 py-3 rounded">
-            No reports or logs found.
-        </div>
-    @else
-        <table class="w-full border">
-            <thead>
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <table class="min-w-full text-sm text-left">
+            <thead class="bg-gray-200 text-gray-700">
                 <tr>
-                    <th class="px-4 py-2">Violation Type</th>
-                    <th class="px-4 py-2">Student</th>
-                    <th class="px-4 py-2">Status</th>
+                    <th class="px-6 py-3">Student</th>
+                    <th class="px-6 py-3">Violation</th>
+                    <th class="px-6 py-3">Date</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($reports as $report)
-                    <tr>
-                        <td class="px-4 py-2">{{ $report->violation_type }}</td>
-                        <td class="px-4 py-2">{{ $report->student->name ?? 'Unknown' }}</td>
-                        <td class="px-4 py-2">{{ $report->status }}</td>
+            <tbody class="text-gray-800">
+                @forelse($reports as $report)
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-6 py-4">{{ $report->student->name ?? 'Unknown' }}</td>
+                        <td class="px-6 py-4">{{ $report->violation_type }}</td>
+                        <td class="px-6 py-4">{{ $report->created_at->format('Y-m-d H:i') }}</td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="3" class="px-6 py-4 text-center text-gray-500">No reports available.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
+    </div>
 
-        <div class="mt-4">
-            {{ $reports->links() }}
-        </div>
-    @endif
+    <div class="mt-4">
+        {{ $reports->links() }}
+    </div>
 </div>
 @endsection

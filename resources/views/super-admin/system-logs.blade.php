@@ -1,40 +1,33 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="p-6 bg-white rounded-lg">
+<div class="min-h-screen bg-gray-100 p-8">
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">System Logs</h1>
 
-    {{-- 🔙 Back Arrow --}}
-    <a href="{{ route('superadmin.dashboard') }}" class="text-blue-600 hover:underline flex items-center mb-4">
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-        Back to Dashboard
-    </a>
-
-    <h1 class="mb-4 text-xl font-semibold">System Logs</h1>
-
-    <table class="w-full border">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="px-4 py-2">User</th>
-                <th class="px-4 py-2">Action</th>
-                <th class="px-4 py-2">Timestamp</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($logs as $log)
-                <tr class="border-b">
-                    <td class="px-4 py-2">{{ $log->user->name ?? 'System' }}</td>
-                    <td class="px-4 py-2">{{ $log->action }}</td>
-                    <td class="px-4 py-2">{{ $log->created_at->format('Y-m-d H:i') }}</td>
-                </tr>
-            @empty
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <table class="min-w-full table-auto">
+            <thead class="bg-gray-200 text-gray-700">
                 <tr>
-                    <td colspan="3" class="px-4 py-4 text-center text-gray-500">No logs found.</td>
+                    <th class="px-6 py-3 text-left text-sm font-medium">User</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium">Action</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium">Timestamp</th>
                 </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="text-gray-700">
+                @forelse ($logs as $log)
+                    <tr class="border-t hover:bg-gray-50">
+                        <td class="px-6 py-4">{{ $log->user?->name ?? 'System' }}</td>
+                        <td class="px-6 py-4">{{ $log->action }}</td>
+                        <td class="px-6 py-4">{{ $log->created_at->format('Y-m-d H:i') }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" class="text-center px-6 py-4 text-gray-500">No logs available.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 
     <div class="mt-4">
         {{ $logs->links() }}
