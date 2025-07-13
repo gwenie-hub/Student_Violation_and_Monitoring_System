@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\ViolationController;
+use App\Http\Controllers\Disciplinary\ParentNotificationController;
 use App\Models\{User, Student, Violation, SystemLog};
 use App\Http\Livewire\{
     ViolationForm,
@@ -117,32 +118,43 @@ Route::middleware(['auth', 'verified'])->group(function () {
             abort_unless(auth()->user()->hasRole('disciplinary_committee'), 403);
             return view('disciplinary.dashboard');
         })->name('disciplinary.dashboard');
-
+    
         Route::get('/violations', function () {
             $violations = Violation::with('student')->latest()->paginate(10);
             return view('disciplinary.violations', compact('violations'));
         })->name('disciplinary.violations');
-
+    
         Route::get('/violations/{violation}/edit', function ($id) {
             $violation = Violation::with('student')->findOrFail($id);
             return view('disciplinary.edit', compact('violation'));
         })->name('disciplinary.edit');
-
+    
         Route::put('/violations/{violation}', function (Request $request, $id) {
             $request->validate(['sanction' => 'required|string']);
             $violation = Violation::findOrFail($id);
             $violation->sanction = $request->sanction;
             $violation->notify_status = 'success';
             $violation->save();
-
+    
             return redirect()->route('disciplinary.violations')->with('success', 'Sanction applied.');
         })->name('disciplinary.update');
-
+    
         Route::view('/reports', 'disciplinary.reports')->name('disciplinary.reports');
         Route::view('/actions', 'disciplinary.actions')->name('disciplinary.actions');
         Route::view('/notifications', 'disciplinary.notifications')->name('disciplinary.notifications');
         Route::view('/sanctions/apply', 'disciplinary.apply-sanction')->name('sanctions.apply');
-        Route::view('/parents/notify', 'disciplinary.notify-parents')->name('parents.notify');
+    
+        // 🟢 Notify Parents - Updated with closure
+        Route::get('/parents/notify', function () {
+            $violations = \App\Models\Violation::with(['student', 'reporter'])
+                ->latest()
+                ->get();
+    
+            return view('disciplinary.notify-parents', compact('violations'));
+        })->name('parents.notify');
+    
+        Route::post('/parents/notify/send', [ParentNotificationController::class, 'send'])->name('parents.notify.send');
+    
         Route::view('/status/index', 'disciplinary.status-tracking')->name('report.status');
         Route::view('/tracking', 'disciplinary.tracking')->name('tracking.status');
     });
