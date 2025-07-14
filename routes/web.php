@@ -11,6 +11,7 @@ use App\Models\{User, Student, Violation, SystemLog};
 use App\Http\Livewire\{
     ViolationForm,
     Admin\UserManagement,
+    Admin\ManageViolations,
     Admin\StudentManagement,
     Admin\ManageViolations as AdminManageViolations,
     Admin\RoleManagement,
@@ -18,6 +19,14 @@ use App\Http\Livewire\{
     SuperAdmin\AddUser,
     SuperAdmin\StudentRecords
 };
+
+use App\Livewire\Admin\ApprovedViolations;
+use App\Livewire\Admin\PendingViolations;
+use App\Livewire\Admin\ViolationStatusView;
+use App\Livewire\Admin\AllViolations;
+
+
+
 
 // 🏠 Welcome Page
 Route::get('/', fn() => view('welcome'));
@@ -81,35 +90,46 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name('admin.dashboard');
 
         Route::get('/users', UserManagement::class)->name('admin.users');
-        Route::get('/students', StudentManagement::class)->name('admin.students');
-        Route::get('/violations', AdminManageViolations::class)->name('admin.violations');
+
+        Route::get('/student-violations', [\App\Http\Controllers\StudentViolationController::class, 'index'])
+        ->name('admin.student-violations')
+        ->middleware(['auth', 'verified']);
+    
+        Route::get('/violations', AllViolations::class)->name('admin.violations');
         Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
         Route::get('/roles', RoleManagement::class)->name('admin.roles');
         });
+        
+        Route::get('/violations/{status}', ViolationStatusView::class)
+        ->whereIn('status', ['pending', 'approved'])
+        ->name('admin.violations.status');
 
-        Route::get('/violations/status/{status}', [ViolationController::class, 'filterByStatus'])->name('violations.status');
     });
 
-    // ✅ PROFESSOR
-    Route::prefix('professor')->group(function () {
+    //PROFESSOR
+    Route::prefix('professor')->middleware(['auth', 'verified'])->group(function () {
+        // Dashboard
         Route::get('/', function () {
             abort_unless(auth()->user()->hasRole('professor'), 403);
-            $violations = \App\Models\Violation::with('student')
-                            ->where('reported_by', auth()->id())
+    
+            $violations = \App\Models\StudentViolation::where('status', 'approved')
                             ->latest()
                             ->paginate(10);
+    
             return view('professor.dashboard', compact('violations'));
         })->name('professor.dashboard');
     
+        // Create Violation Form
         Route::get('/violations/create', function () {
             return view('professor.violations.create');
         })->name('violations.create');
-
-        Route::get('/admin/violations/pending', \App\Http\Livewire\Admin\PendingViolations::class)
-            ->name('admin.violations.pending');
-        Route::get('/violations', [ViolationController::class, 'index'])->name('violations.index');
+    
+        // Submit/Delete/Edit/View Violations
+        Route::get('/violations', [StudentViolationController::class, 'index'])->name('violations.index');
         Route::get('/violations/mine', [ViolationController::class, 'myViolations'])->name('violations.my');
+        Route::delete('/violations/{id}', [ViolationController::class, 'destroy'])->name('violations.destroy');
     });
+    
     
 
     // ✅ DISCIPLINARY COMMITTEE

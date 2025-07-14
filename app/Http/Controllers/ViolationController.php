@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Violation;
 use App\Models\User;
+use App\Models\StudentViolation;
+use Illuminate\Support\Facades\Auth;
 
 class ViolationController extends Controller
 {
@@ -16,6 +18,19 @@ class ViolationController extends Controller
 
         return view('disciplinary.violations', compact('violations'));
     }
+
+
+    public function myViolations()
+    {
+        $userId = Auth::id();
+
+        $violations = StudentViolation::where('reported_by', $userId)
+            ->orderByDesc('created_at')
+            ->paginate(10);
+
+        return view('professor.violations.my-submissions', compact('violations'));
+    }
+
 
     public function create()
     {
@@ -46,15 +61,6 @@ class ViolationController extends Controller
         return redirect()->route('violations.index');
     }
 
-    public function myViolations()
-    {
-        $violations = Violation::where('reported_by', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->get();
-    
-        return view('professor.violations.index', compact('violations'));
-    }
-
     public function filterByStatus($status)
     {
     $violations = Violation::where('status', $status)->get();
@@ -64,11 +70,12 @@ class ViolationController extends Controller
 
     public function destroy($id)
     {
-    $violation = Violation::findOrFail($id);
-    $violation->delete();
-
-    return redirect()->back()->with('success', 'Violation deleted successfully.');
+        $violation = \App\Models\StudentViolation::findOrFail($id);
+        $violation->delete();
+    
+        return redirect()->back()->with('success', 'Violation deleted successfully.');
     }
+    
 
 }
     

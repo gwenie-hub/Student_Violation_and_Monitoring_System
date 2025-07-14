@@ -7,7 +7,7 @@
     <nav class="flex flex-col space-y-2 text-gray-800">
         <a href="{{ route('admin.dashboard') }}" class="hover:bg-gray-200 px-3 py-2 rounded">Dashboard</a>
         <a href="{{ route('admin.users') }}" class="hover:bg-gray-200 px-3 py-2 rounded">Manage Users</a>
-        <a href="{{ route('admin.students') }}" class="hover:bg-gray-200 px-3 py-2 rounded">Student Records</a>
+        <a href="{{ route('admin.student-violations') }}" class="hover:bg-gray-200 px-3 py-2 rounded">Student Records</a>
         <a href="{{ route('admin.violations') }}" class="hover:bg-gray-200 px-3 py-2 rounded">Violations</a>
         <a href="{{ route('admin.roles') }}" class="hover:bg-gray-200 px-3 py-2 rounded">Roles</a>
 

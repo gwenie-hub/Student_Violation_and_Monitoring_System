@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\StudentViolation;
+use Illuminate\Support\Facades\Auth;
+
+class StudentViolationController extends Controller
+{
+    public function store(Request $request)
+    {
+        $request->validate([
+            'student_id'    => 'required|exists:users,id',
+            'last_name'     => 'required|string',
+            'first_name'    => 'required|string',
+            'middle_name'   => 'nullable|string',
+            'course'        => 'required|string',
+            'year_section'  => 'required|string',
+            'violation'     => 'required|string',
+            'offense_type'  => 'required|in:Minor,Major',
+        ]);
+
+        StudentViolation::create([
+            'student_id'    => $request->student_id,
+            'last_name'     => $request->last_name,
+            'first_name'    => $request->first_name,
+            'middle_name'   => $request->middle_name,
+            'course'        => $request->course,
+            'year_section'  => $request->year_section,
+            'violation'     => $request->violation,
+            'offense_type'  => $request->offense_type,
+            'reported_by'   => Auth::id(), // 👈 Automatically inserts professor's ID
+        ]);
+
+        return redirect()->route('violations.my')->with('success', 'Violation submitted successfully.');
+    }
+}

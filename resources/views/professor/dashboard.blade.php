@@ -67,7 +67,8 @@
     <input type="text" wire:model="search" placeholder="Search student..."
            class="mb-4 px-4 py-2 border rounded-lg w-full" />
 
-    <!-- Violations Table -->
+
+    <!-- Approved Violations Table -->
     <table class="w-full table-auto text-left border">
         <thead class="bg-gray-100">
             <tr>
@@ -81,36 +82,35 @@
         <tbody>
             @forelse($violations as $violation)
                 <tr class="border-t">
-                    <td class="px-4 py-2">{{ $violation->student->name ?? 'N/A' }}</td>
-                    <td class="px-4 py-2">{{ $violation->description }}</td>
-                    <td class="px-4 py-2">{{ $violation->created_at->format('M d, Y') }}</td>
                     <td class="px-4 py-2">
-                        <span class="px-2 py-1 rounded text-sm
-                            {{ $violation->status === 'pending' ? 'bg-yellow-200 text-yellow-800'
-                                : ($violation->status === 'approved' ? 'bg-green-200 text-green-800'
-                                : 'bg-red-200 text-red-800') }}">
-                            {{ ucfirst($violation->status) }}
+                        {{ $violation->last_name }}, {{ $violation->first_name }} {{ $violation->middle_name }}
+                    </td>
+                    <td class="px-4 py-2">{{ $violation->violation }}</td>
+                    <td class="px-4 py-2">{{ \Carbon\Carbon::parse($violation->created_at)->format('M d, Y') }}</td>
+                    <td class="px-4 py-2">
+                        <span class="px-2 py-1 rounded text-sm bg-green-200 text-green-800">
+                            Approved
                         </span>
                     </td>
                     <td class="px-4 py-2">
                         <form action="{{ route('violations.destroy', $violation->id) }}" method="POST"
-                              onsubmit="return confirm('Are you sure you want to delete this violation?');">
+                            onsubmit="return confirm('Are you sure you want to delete this violation?');">
                             @csrf
                             @method('DELETE')
-                            <button type="submit"
-                                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">
-                                Delete
+                            <button type="submit" class="text-red-600 hover:text-red-800">
+                                DELETE
                             </button>
                         </form>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="px-4 py-4 text-center text-gray-500">No violations found.</td>
+                    <td colspan="5" class="px-4 py-4 text-center text-gray-500">No approved violations found.</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
+
 
     <!-- Pagination -->
     <div class="mt-4">
