@@ -53,7 +53,7 @@ class ViolationForm extends Component
         ]);
 
         session()->flash('success', 'Violation submitted successfully!');
-
+        $this->dispatchBrowserEvent('violation-submitted');
         // Optionally reset form after submit
         $this->reset([
             'student_id',

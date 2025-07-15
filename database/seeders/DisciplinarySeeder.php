@@ -17,7 +17,9 @@ class DisciplinarySeeder extends Seeder
         $user = User::firstOrCreate(
             ['email' => 'disciplinary@example.com'],
             [
-                'name' => 'Disciplinary Committee',
+                'fname' => 'Disciplinary',
+                'mname' => 'Committee',
+                'lname' => 'Member',
                 'password' => Hash::make('password'), // Change for prod
             ]
         );

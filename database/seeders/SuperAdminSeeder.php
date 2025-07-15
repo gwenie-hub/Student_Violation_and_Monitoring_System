@@ -18,7 +18,9 @@ class SuperAdminSeeder extends Seeder
         User::updateOrInsert(
             ['email' => 'lezzahgwenn@gmail.com'], // unique identifier
             [
-                'name' => 'Super Admin',
+                'fname' => 'Super',
+                'mname' => 'Admin',
+                'lname' => 'Gwenn',
                 'password' => Hash::make('gwen100803'),
             ]
         );

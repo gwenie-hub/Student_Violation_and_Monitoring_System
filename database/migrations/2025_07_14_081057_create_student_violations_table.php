@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('violation');
             $table->enum('offense_type', ['Minor', 'Major']);
             $table->enum('status', ['pending', 'approved', 'declined'])->default('pending');
+            $table->string('sanction')->nullable(); // 👈 NEW COLUMN ADDED
             $table->timestamps();
         });
     }

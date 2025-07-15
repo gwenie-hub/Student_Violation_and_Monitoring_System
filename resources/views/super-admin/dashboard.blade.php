@@ -9,16 +9,6 @@
             <h3 class="text-lg font-semibold">Total Users</h3>
             <p class="text-3xl font-bold text-blue-600">{{ $totalUsers }}</p>
         </div>
-
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-semibold">Total Students</h3>
-            <p class="text-3xl font-bold text-green-600">{{ $totalStudents }}</p>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-semibold">Total Violations</h3>
-            <p class="text-3xl font-bold text-red-600">{{ $totalViolations }}</p>
-        </div>
     </div>
 </main>
 @endsection

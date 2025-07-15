@@ -31,7 +31,7 @@ class StudentRecords extends Component
     {
         $students = User::whereHas('roles', fn ($q) => $q->where('name', 'student'))
             ->where(function ($query) {
-                $query->where('name', 'like', "%{$this->search}%")
+                $query->where('fname', 'like', "%{$this->search}%")
                       ->orWhere('email', 'like', "%{$this->search}%");
             })
             ->orderBy('name')

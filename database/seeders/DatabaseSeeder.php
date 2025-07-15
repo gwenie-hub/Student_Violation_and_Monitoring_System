@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,     // Super Admin user with role
             SchoolAdminSeeder::class,    // School Admin user with role
             ParentSeeder::class,         // Parent user with linked student
-            DisciplinarySeeder::class,   // Disciplinary Committee user
+            DisciplinarySeeder::class,   // Disciplinary Committee 
+            ProfessorSeeder::class,      // Professor user with role
         ]);
     }
     

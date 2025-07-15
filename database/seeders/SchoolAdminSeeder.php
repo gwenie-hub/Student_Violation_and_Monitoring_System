@@ -16,7 +16,9 @@ class SchoolAdminSeeder extends Seeder
         User::updateOrInsert(
             ['id' => 2],
             [
-                'name' => 'School Admin',
+                'fname' => 'School',
+                'mname' => 'Admin',
+                'lname' => 'Philippe',
                 'email' => 'philippedelgado20@gmail.com',
                 'password' => Hash::make('pphilippe20'),
             ]

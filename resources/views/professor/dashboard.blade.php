@@ -15,19 +15,19 @@
            class="block hover:bg-gray-200 px-3 py-2 rounded {{ request()->routeIs('professor.dashboard') ? 'bg-gray-300 font-bold' : '' }}">
             Dashboard Overview
         </a>
-        <a href="{{ route('violations.create') }}"
-           class="block hover:bg-gray-200 px-3 py-2 rounded {{ request()->routeIs('violations.create') ? 'bg-gray-300 font-bold' : '' }}">
+        <a href="{{ route('professor.violations.create') }}"
+           class="block hover:bg-gray-200 px-3 py-2 rounded {{ request()->routeIs('professor.violations.create') ? 'bg-gray-300 font-bold' : '' }}">
             Submit Violation
         </a>
-        <a href="{{ route('violations.index') }}"
-           class="block hover:bg-gray-200 px-3 py-2 rounded {{ request()->routeIs('violations.index') ? 'bg-gray-300 font-bold' : '' }}">
+        <a href="{{ route('professor.violations.index') }}"
+           class="block hover:bg-gray-200 px-3 py-2 rounded {{ request()->routeIs('professor.violations.index') ? 'bg-gray-300 font-bold' : '' }}">
             Edit Violation Report
         </a>
-        <a href="{{ route('violations.my') }}"
-           class="block hover:bg-gray-200 px-3 py-2 rounded {{ request()->routeIs('violations.my') ? 'bg-gray-300 font-bold' : '' }}">
+        <a href="{{ route('professor.violations.my') }}"
+           class="block hover:bg-gray-200 px-3 py-2 rounded {{ request()->routeIs('professor.violations.my') ? 'bg-gray-300 font-bold' : '' }}">
             My Submissions
         </a>
-        <a href="{{ route('notifications.index') }}"
+        <a href="#"
            class="block hover:bg-gray-200 px-3 py-2 rounded {{ request()->routeIs('notifications.index') ? 'bg-gray-300 font-bold' : '' }}">
             Notifications
         </a>
@@ -58,7 +58,7 @@
         </div>
     @endif
 
-    <a href="{{ route('violations.create') }}"
+    <a href="{{ route('professor.violations.create') }}"
        class="mb-6 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
         Create Violation
     </a>
@@ -66,7 +66,6 @@
     <!-- Search bar (Livewire-ready) -->
     <input type="text" wire:model="search" placeholder="Search student..."
            class="mb-4 px-4 py-2 border rounded-lg w-full" />
-
 
     <!-- Approved Violations Table -->
     <table class="w-full table-auto text-left border">
@@ -93,8 +92,8 @@
                         </span>
                     </td>
                     <td class="px-4 py-2">
-                        <form action="{{ route('violations.destroy', $violation->id) }}" method="POST"
-                            onsubmit="return confirm('Are you sure you want to delete this violation?');">
+                        <form action="{{ route('professor.violations.destroy', $violation->id) }}" method="POST"
+                              onsubmit="return confirm('Are you sure you want to delete this violation?');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="text-red-600 hover:text-red-800">
@@ -110,7 +109,6 @@
             @endforelse
         </tbody>
     </table>
-
 
     <!-- Pagination -->
     <div class="mt-4">

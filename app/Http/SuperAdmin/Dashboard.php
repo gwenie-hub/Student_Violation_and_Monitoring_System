@@ -20,8 +20,6 @@ class Dashboard extends Component
 
         try {
             $this->totalUsers = User::count();
-            $this->totalStudents = Student::count();
-            $this->totalViolations = Violation::count();
         } catch (\Exception $e) {
             $this->addError('load', 'Error loading dashboard statistics.');
         }

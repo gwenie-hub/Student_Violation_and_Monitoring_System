@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class StudentViolationController extends Controller
 {
+    public function index()
+    {
+        // You can customize this to fetch violations as needed
+        $violations = \App\Models\StudentViolation::with('student')->latest()->get();
+        return view('admin.student-violations.index', compact('violations'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([

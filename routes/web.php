@@ -20,13 +20,11 @@ use App\Http\Livewire\{
     SuperAdmin\StudentRecords
 };
 
+use App\Http\Controllers\StudentViolationController;
 use App\Livewire\Admin\ApprovedViolations;
 use App\Livewire\Admin\PendingViolations;
 use App\Livewire\Admin\ViolationStatusView;
 use App\Livewire\Admin\AllViolations;
-
-
-
 
 // 🏠 Welcome Page
 Route::get('/', fn() => view('welcome'));
@@ -46,158 +44,92 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/user/profile', function () {
+        return view('profile.show');
+    })->name('profile.show');
 
     // ✅ SUPER ADMIN
-    Route::prefix('super-admin')->middleware(['auth', 'verified'])->group(function () {
+    Route::prefix('super-admin')->name('superadmin.')->group(function () {
         Route::get('/dashboard', function () {
             abort_unless(auth()->user()?->hasRole('super_admin'), 403);
-    
             return view('super-admin.dashboard', [
                 'totalUsers' => User::count(),
                 'totalStudents' => Student::count(),
                 'totalViolations' => Violation::count(),
             ]);
-        })->name('superadmin.dashboard');
+        })->name('dashboard');
 
-        Route::get('/users/create', AddUser::class)->name('superadmin.add-user');
-
-        Route::get('/users/manage', function () {
-            abort_unless(auth()->user()->hasRole('super_admin'), 403);
-            return view('super-admin.manage-accounts');
-        })->name('superadmin.manage-accounts');
-
-        Route::get('/student_records', StudentRecords::class)->name('superadmin.student-records');
-
-        Route::get('/system/logs', function () {
-            $logs = SystemLog::with('user')->latest()->paginate(10);
-            return view('super-admin.system-logs', compact('logs'));
-        })->name('superadmin.system-logs');        
-
-       Route::get('/reports', function () {
-    $reports = Violation::with('student')->latest()->paginate(10);
-    return view('super-admin.reports-status', compact('reports'));
-})->name('superadmin.reports-status');
-;
-
-        Route::get('/reports/redirect', fn () => redirect()->route('superadmin.reports-status'))->name('reports.index');
+        Route::get('/users/create', fn() => view('super-admin.users.create'))->name('add-user');
+        Route::get('/users/manage', fn() => view('super-admin.manage-accounts'))->name('manage-accounts');
+        Route::get('/student_records', StudentRecords::class)->name('student-records');
+        Route::get('/system/logs', fn() => view('super-admin.system-logs', ['logs' => SystemLog::with('user')->latest()->paginate(10)]))->name('system-logs');
+        Route::get('/reports', fn() => view('super-admin.reports-status', ['reports' => Violation::with('student')->latest()->paginate(10)]))->name('reports-status');
+        Route::get('/settings', fn() => view('profile.show'))->name('settings');
     });
 
     // ✅ SCHOOL ADMIN
-    Route::prefix('admin')->group(function () {
-        Route::get('/dashboard', function () {
-            abort_unless(auth()->user()->hasRole('school_admin'), 403);
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
-
-        Route::get('/users', UserManagement::class)->name('admin.users');
-
-        Route::get('/student-violations', [\App\Http\Controllers\StudentViolationController::class, 'index'])
-        ->name('admin.student-violations')
-        ->middleware(['auth', 'verified']);
-    
-        Route::get('/violations', AllViolations::class)->name('admin.violations');
-        Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
-        Route::get('/roles', RoleManagement::class)->name('admin.roles');
-        });
-        
-        Route::get('/violations/{status}', ViolationStatusView::class)
-        ->whereIn('status', ['pending', 'approved'])
-        ->name('admin.violations.status');
-
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
+        Route::get('/users', UserManagement::class)->name('users');
+        Route::get('/student-violations', [\App\Http\Controllers\StudentViolationController::class, 'index'])->name('student-violations');
+        Route::get('/violations', AllViolations::class)->name('violations');
+        Route::get('/roles', RoleManagement::class)->name('roles');
+        Route::get('/violations/{status}', ViolationStatusView::class)->whereIn('status', ['pending', 'approved'])->name('violations.status');
+        Route::get('/settings', fn() => view('profile.show'))->name('settings');
     });
 
-    //PROFESSOR
-    Route::prefix('professor')->middleware(['auth', 'verified'])->group(function () {
-        // Dashboard
-        Route::get('/', function () {
-            abort_unless(auth()->user()->hasRole('professor'), 403);
-    
-            $violations = \App\Models\StudentViolation::where('status', 'approved')
-                            ->latest()
-                            ->paginate(10);
-    
-            return view('professor.dashboard', compact('violations'));
-        })->name('professor.dashboard');
-    
-        // Create Violation Form
-        Route::get('/violations/create', function () {
-            return view('professor.violations.create');
-        })->name('violations.create');
-    
-        // Submit/Delete/Edit/View Violations
+    // ✅ PROFESSOR
+    Route::prefix('professor')->name('professor.')->group(function () {
+        Route::get('/dashboard', fn() => view('professor.dashboard', [
+            'violations' => \App\Models\StudentViolation::where('status', 'approved')->latest()->paginate(10),
+        ]))->name('dashboard');
+
+        Route::get('/violations/create', fn() => view('professor.violations.create'))->name('violations.create');
         Route::get('/violations', [StudentViolationController::class, 'index'])->name('violations.index');
         Route::get('/violations/mine', [ViolationController::class, 'myViolations'])->name('violations.my');
         Route::delete('/violations/{id}', [ViolationController::class, 'destroy'])->name('violations.destroy');
+        Route::get('/settings', fn() => view('profile.show'))->name('settings');
     });
-    
-    
 
     // ✅ DISCIPLINARY COMMITTEE
-    Route::prefix('disciplinary')->group(function () {
-        Route::get('/dashboard', function () {
-            abort_unless(auth()->user()->hasRole('disciplinary_committee'), 403);
-            return view('disciplinary.dashboard');
-        })->name('disciplinary.dashboard');
-    
-        Route::get('/violations', function () {
-            $violations = Violation::with('student')->latest()->paginate(10);
-            return view('disciplinary.violations', compact('violations'));
-        })->name('disciplinary.violations');
-    
-        Route::get('/violations/{violation}/edit', function ($id) {
-            $violation = Violation::with('student')->findOrFail($id);
-            return view('disciplinary.edit', compact('violation'));
-        })->name('disciplinary.edit');
-    
+    Route::prefix('disciplinary')->name('disciplinary.')->group(function () {
+        Route::get('/dashboard', fn() => view('disciplinary.dashboard'))->name('dashboard');
+        Route::get('/violations', fn() => view('disciplinary.violations', ['violations' => Violation::with('student')->latest()->paginate(10)]))->name('violations');
+        Route::get('/violations/{violation}/edit', fn($id) => view('disciplinary.edit', ['violation' => Violation::with('student')->findOrFail($id)]))->name('edit');
         Route::put('/violations/{violation}', function (Request $request, $id) {
             $request->validate(['sanction' => 'required|string']);
             $violation = Violation::findOrFail($id);
             $violation->sanction = $request->sanction;
             $violation->notify_status = 'success';
             $violation->save();
-    
             return redirect()->route('disciplinary.violations')->with('success', 'Sanction applied.');
-        })->name('disciplinary.update');
-    
-        Route::view('/reports', 'disciplinary.reports')->name('disciplinary.reports');
-        Route::view('/actions', 'disciplinary.actions')->name('disciplinary.actions');
-        Route::view('/notifications', 'disciplinary.notifications')->name('disciplinary.notifications');
+        })->name('update');
+
+        Route::view('/reports', 'disciplinary.reports')->name('reports');
+        Route::view('/actions', 'disciplinary.actions')->name('actions');
+        Route::view('/notifications', 'disciplinary.notifications')->name('notifications');
         Route::view('/sanctions/apply', 'disciplinary.apply-sanction')->name('sanctions.apply');
-    
-        // 🟢 Notify Parents - Updated with closure
-        Route::get('/parents/notify', function () {
-            $violations = \App\Models\Violation::with(['student', 'reporter'])
-                ->latest()
-                ->get();
-    
-            return view('disciplinary.notify-parents', compact('violations'));
-        })->name('parents.notify');
-    
+        Route::get('/parents/notify', fn() => view('disciplinary.notify-parents', [
+            'violations' => \App\Models\Violation::with(['student', 'reporter'])->latest()->get()
+        ]))->name('parents.notify');
         Route::post('/parents/notify/send', [ParentNotificationController::class, 'send'])->name('parents.notify.send');
-    
         Route::view('/status/index', 'disciplinary.status-tracking')->name('report.status');
         Route::view('/tracking', 'disciplinary.tracking')->name('tracking.status');
+        Route::get('/settings', fn() => view('profile.show'))->name('settings');
     });
 
     // ✅ GUIDANCE COUNSELOR
-    Route::prefix('counselor')->group(function () {
-        Route::get('/dashboard', function () {
-            abort_unless(auth()->user()->hasRole('guidance_counselor'), 403);
-            return view('counselor.dashboard');
-        })->name('counselor.dashboard');
-
-        Route::get('/reports', CounselingReports::class)->name('counselor.reports');
+    Route::prefix('counselor')->name('counselor.')->group(function () {
+        Route::get('/dashboard', fn() => view('counselor.dashboard'))->name('dashboard');
+        Route::get('/reports', CounselingReports::class)->name('reports');
+        Route::get('/settings', fn() => view('profile.show'))->name('settings');
     });
 
     // ✅ PARENT
-    Route::prefix('parent')->group(function () {
-        Route::get('/dashboard', function () {
-            abort_unless(auth()->user()->hasRole('parent'), 403);
-            $student = auth()->user()->student;
-            return view('parent.dashboard', compact('student'));
-        })->name('parent.dashboard');
-
+    Route::prefix('parent')->name('parent.')->group(function () {
+        Route::get('/dashboard', fn() => view('parent.dashboard', ['student' => auth()->user()->student]))->name('dashboard');
         Route::view('/notifications', 'parent.notifications')->name('notifications.index');
+        Route::get('/settings', fn() => view('profile.show'))->name('settings');
     });
 
     // ✅ OTP Routes

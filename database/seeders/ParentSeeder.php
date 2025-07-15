@@ -19,7 +19,9 @@ class ParentSeeder extends Seeder
         $existing = User::where('email', 'parent@example.com')->first();
         if (!$existing) {
             $parentUser = User::create([
-                'name' => 'Parent User',
+                'fname' => 'Parent',
+                'mname' => 'Of',
+                'lname' => 'Student',
                 'email' => 'parent@example.com',
                 'password' => Hash::make('password'), // 🔒 Change in production!
             ]);

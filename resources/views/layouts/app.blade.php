@@ -10,9 +10,6 @@
 </head>
 <body class="bg-gray-100 text-gray-900">
 
-    <!-- Top Navigation -->
-    @include('layouts.navigation')
-
     <div class="flex min-h-screen">
 
         <!-- Sidebar -->
@@ -41,5 +38,12 @@
     </div>
 
     @livewireScripts
+    <script>
+        window.addEventListener('violation-submitted', function () {
+            setTimeout(function() {
+                window.location.href = '/dashboard';
+            }, 1200); // Wait for flash message
+        });
+    </script>
 </body>
 </html>

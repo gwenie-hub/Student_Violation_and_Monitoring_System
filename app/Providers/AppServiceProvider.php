@@ -27,8 +27,15 @@ class AppServiceProvider extends ServiceProvider
     $router->aliasMiddleware('permission', PermissionMiddleware::class);
     $router->aliasMiddleware('role_or_permission', RoleOrPermissionMiddleware::class);
 
-    // ✅ Register Livewire component manually
+    // ✅ Register Livewire components manually
     Livewire::component('admin.manage-violations', \App\Http\Livewire\Admin\ManageViolations::class);
+    Livewire::component('admin.sidebar-photo-upload', \App\Http\Livewire\Admin\SidebarPhotoUpload::class);
+    Livewire::component('profile.update-profile-information-form', \App\Http\Livewire\Profile\UpdateProfileInformationForm::class);
+    Livewire::component('admin.user-management', \App\Http\Livewire\Admin\UserManagement::class);
+    Livewire::component('admin.student-management', \App\Http\Livewire\Admin\StudentManagement::class);
+    Livewire::component('admin.role-management', \App\Http\Livewire\Admin\RoleManagement::class);
+    
+    Livewire::component('super-admin.add-user', \App\Http\Livewire\SuperAdmin\AddUser::class);
     Blade::component('authentication-card', \App\View\Components\AuthenticationCard::class);
     Blade::component('authentication-card-logo', \App\View\Components\AuthenticationCardLogo::class);
 

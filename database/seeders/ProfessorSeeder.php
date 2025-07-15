@@ -10,17 +10,32 @@ class ProfessorSeeder extends Seeder
 {
     public function run(): void
     {
-        // ✅ Safe: Create or get existing role
-        $role = Role::firstOrCreate(['name' => 'Professor']);
+        // Create or get the 'professor' role
+        $role = Role::firstOrCreate(['name' => 'professor']);
 
-        // Create user
-        $user = User::firstOrCreate(
-            ['email' => 'philippedelgado75@gmail.com'],
-            ['name' => 'Prof. Easy', 'password' => bcrypt('123papamo')]
-        );
+        // Try to find existing user
+        $user = User::where('email', 'philippedelgado75@gmail.com')->first();
+
+        if (! $user) {
+            // If user doesn't exist, create
+            $user = User::create([
+                'email' => 'philippedelgado75@gmail.com',
+                'fname' => 'Professor',
+                'mname' => 'Philippe',
+                'lname' => 'Delgado',
+                'password' => bcrypt('123papamo'),
+            ]);
+        } else {
+            // If user exists, update name fields if needed
+            $user->update([
+                'fname' => 'Professor',
+                'mname' => 'Philippe',
+                'lname' => 'Delgado',
+            ]);
+        }
 
         // Assign role if not already assigned
-        if (! $user->hasRole('Professor')) {
+        if (! $user->hasRole('professor')) {
             $user->assignRole($role);
         }
     }
