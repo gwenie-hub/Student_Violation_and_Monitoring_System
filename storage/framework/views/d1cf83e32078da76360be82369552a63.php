@@ -37,11 +37,5 @@ endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
     </form>
 
-    <!--[if BLOCK]><![endif]--><?php if(session()->has('success')): ?>
-        <div class="alert alert-success mt-2 py-1 px-2 small text-center">
-            <?php echo e(session('success')); ?>
-
-        </div>
-    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 </div>
 <?php /**PATH C:\laragon\www\StudentViolationManagementSystem\resources\views/livewire/admin/sidebar-photo-upload.blade.php ENDPATH**/ ?>

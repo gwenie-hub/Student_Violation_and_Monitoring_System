@@ -20,6 +20,7 @@ class StudentViolation extends Model
         'violation',
         'offense_type',
         'status',
+        'sanction',
         'reported_by',
     ];
 

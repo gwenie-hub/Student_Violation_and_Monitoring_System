@@ -14,6 +14,7 @@ class StudentViolationController extends Controller
         $violations = \App\Models\StudentViolation::with('student')->latest()->get();
         return view('admin.student-violations.index', compact('violations'));
     }
+    
 
     public function store(Request $request)
     {

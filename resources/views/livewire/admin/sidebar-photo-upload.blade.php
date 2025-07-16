@@ -29,9 +29,4 @@
         @enderror
     </form>
 
-    @if (session()->has('success'))
-        <div class="alert alert-success mt-2 py-1 px-2 small text-center">
-            {{ session('success') }}
-        </div>
-    @endif
 </div>

@@ -38,38 +38,17 @@ if (isset($__slots)) unset($__slots);
             </li>
 
             <li class="nav-item">
-                <a href="<?php echo e(route('disciplinary.violations')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-journal-text fs-5 text-primary"></i>
-                    <span>Violation Records</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-check2-circle fs-5 text-primary"></i>
-                    <span>Apply Sanctions</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
                 <a href="#" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
                     <i class="bi bi-envelope-fill fs-5 text-primary"></i>
                     <span>Notify Parents</span>
                 </a>
             </li>
 
-
             <li class="nav-item">
-                <a href="<?php echo e(route('disciplinary.reports')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-bar-chart-fill fs-5 text-primary"></i>
-                    <span>Reports</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a href="<?php echo e(route('admin.settings')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-person-circle fs-5 text-primary"></i>
-                    <span>Profile</span>
+                <a href="<?php echo e(route('profile.show')); ?>"
+                   class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg <?php echo e(request()->routeIs('profile.show') ? 'active' : ''); ?>">
+                    <i class="bi bi-gear-fill fs-5 text-primary"></i>
+                    <span>Settings</span>
                 </a>
             </li>
         </ul>

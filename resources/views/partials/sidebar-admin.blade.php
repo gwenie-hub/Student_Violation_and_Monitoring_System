@@ -16,27 +16,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.users') }}" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-people-fill fs-5 text-primary"></i>
-                    <span>Manage Users</span>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a href="{{ route('admin.student-violations') }}" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
                     <i class="bi bi-journal-text fs-5 text-primary"></i>
                     <span>Student Records</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.violations') }}" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-exclamation-triangle-fill fs-5 text-primary"></i>
-                    <span>Violations</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.roles') }}" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-person-badge-fill fs-5 text-primary"></i>
-                    <span>Roles</span>
                 </a>
             </li>
             <li class="nav-item">

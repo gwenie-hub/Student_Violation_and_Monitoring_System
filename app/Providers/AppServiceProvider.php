@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
     Livewire::component('admin.user-management', \App\Http\Livewire\Admin\UserManagement::class);
     Livewire::component('admin.student-management', \App\Http\Livewire\Admin\StudentManagement::class);
     Livewire::component('admin.role-management', \App\Http\Livewire\Admin\RoleManagement::class);
-    
+    Livewire::component('disciplinary.violation-records', \App\Http\Livewire\Disciplinary\ViolationRecords::class);    
     Livewire::component('super-admin.add-user', \App\Http\Livewire\SuperAdmin\AddUser::class);
     Blade::component('authentication-card', \App\View\Components\AuthenticationCard::class);
     Blade::component('authentication-card-logo', \App\View\Components\AuthenticationCardLogo::class);

@@ -8,7 +8,6 @@ use App\Models\StudentViolation;
 class ViolationStatusView extends Component
 {
     public $status;
-    
 
     public function mount($status)
     {
@@ -26,19 +25,17 @@ class ViolationStatusView extends Component
     public function reject($id)
     {
         $violation = StudentViolation::findOrFail($id);
-        if ($violation->status === 'pending') {
-            $violation->update(['status' => 'rejected']);
-        }
+        $violation->update(['status' => 'declined']); // ✅ fixed: quoted 'rejected'
+        
+        session()->flash('message', 'Violation has been rejected.');
     }
+
 
     public function delete($id)
     {
-        $violation = StudentViolation::findOrFail($id);
-        $violation->delete();
-    
+        StudentViolation::findOrFail($id)->delete();
         session()->flash('message', 'Violation deleted successfully.');
     }
-    
 
     public function render()
     {
