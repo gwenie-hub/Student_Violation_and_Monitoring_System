@@ -1,58 +1,121 @@
-<x-guest-layout>
-    <x-authentication-card>
-    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-16 h-16 mx-auto rounded-full shadow-lg">
-            <x-authentication-card-logo />
-        </x-slot>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Two-Factor Challenge</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <div x-data="{ recovery: false }">
-            <div class="mb-4 text-sm text-gray-600" x-show="! recovery">
-                {{ __('Please confirm access to your account by entering the authentication code provided by your authenticator application.') }}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-gray-100">
+
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+
+            {{-- Logo --}}
+            <div class="flex justify-center mb-6">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-16 h-16 rounded-full shadow-lg">
             </div>
 
-            <div class="mb-4 text-sm text-gray-600" x-cloak x-show="recovery">
-                {{ __('Please confirm access to your account by entering one of your emergency recovery codes.') }}
+            {{-- Tab Buttons --}}
+            <div class="flex justify-center space-x-4 mb-4">
+                <button type="button"
+                        id="authTab"
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none"
+                        onclick="showTab('auth')">
+                    Auth Code
+                </button>
+                <button type="button"
+                        id="recoveryTab"
+                        class="px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded hover:bg-blue-50 focus:outline-none"
+                        onclick="showTab('recovery')">
+                    Recovery Code
+                </button>
             </div>
 
-            <x-validation-errors class="mb-4" />
+            {{-- Instructions --}}
+            <div id="authInstruction" class="mb-4 text-sm text-gray-600">
+                Please enter the authentication code from your authenticator app.
+            </div>
+            <div id="recoveryInstruction" class="mb-4 text-sm text-gray-600 hidden">
+                Please enter one of your emergency recovery codes.
+            </div>
 
+            {{-- Show Errors --}}
+            @if ($errors->any())
+                <div class="mb-4 text-red-600 text-sm">
+                    <ul class="list-disc pl-4">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- Form --}}
             <form method="POST" action="{{ route('two-factor.login') }}">
                 @csrf
 
-                <div class="mt-4" x-show="! recovery">
-                    <x-label for="code" value="{{ __('Code') }}" />
-                    <x-input id="code" class="block mt-1 w-full" type="text" inputmode="numeric" name="code" autofocus x-ref="code" autocomplete="one-time-code" />
+                {{-- Authenticator Code --}}
+                <div id="authInput">
+                    <label for="code" class="block text-sm font-medium text-gray-700">Authentication Code</label>
+                    <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500" autofocus>
                 </div>
 
-                <div class="mt-4" x-cloak x-show="recovery">
-                    <x-label for="recovery_code" value="{{ __('Recovery Code') }}" />
-                    <x-input id="recovery_code" class="block mt-1 w-full" type="text" name="recovery_code" x-ref="recovery_code" autocomplete="one-time-code" />
+                {{-- Recovery Code --}}
+                <div id="recoveryInput" class="hidden">
+                    <label for="recovery_code" class="block text-sm font-medium text-gray-700">Recovery Code</label>
+                    <input id="recovery_code" name="recovery_code" type="text" autocomplete="one-time-code"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-500">
                 </div>
 
-                <div class="flex items-center justify-end mt-4">
-                    <button type="button" class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer"
-                                    x-show="! recovery"
-                                    x-on:click="
-                                        recovery = true;
-                                        $nextTick(() => { $refs.recovery_code.focus() })
-                                    ">
-                        {{ __('Use a recovery code') }}
+                {{-- Submit --}}
+                <div class="mt-6 flex justify-end">
+                    <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded shadow">
+                        Log in
                     </button>
-
-                    <button type="button" class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer"
-                                    x-cloak
-                                    x-show="recovery"
-                                    x-on:click="
-                                        recovery = false;
-                                        $nextTick(() => { $refs.code.focus() })
-                                    ">
-                        {{ __('Use an authentication code') }}
-                    </button>
-
-                    <x-button class="ms-4">
-                        {{ __('Log in') }}
-                    </x-button>
                 </div>
             </form>
         </div>
-    </x-authentication-card>
-</x-guest-layout>
+    </div>
+
+    {{-- Tab Toggle Script --}}
+    <script>
+        function showTab(tab) {
+            const authTab = document.getElementById('authTab');
+            const recoveryTab = document.getElementById('recoveryTab');
+            const authInput = document.getElementById('authInput');
+            const recoveryInput = document.getElementById('recoveryInput');
+            const authInstruction = document.getElementById('authInstruction');
+            const recoveryInstruction = document.getElementById('recoveryInstruction');
+
+            if (tab === 'auth') {
+                authTab.classList.add('bg-blue-600', 'text-white');
+                recoveryTab.classList.remove('bg-blue-600', 'text-white');
+                recoveryTab.classList.add('border', 'border-blue-600', 'text-blue-600');
+
+                authInput.classList.remove('hidden');
+                authInstruction.classList.remove('hidden');
+                recoveryInput.classList.add('hidden');
+                recoveryInstruction.classList.add('hidden');
+            } else {
+                recoveryTab.classList.add('bg-blue-600', 'text-white');
+                authTab.classList.remove('bg-blue-600', 'text-white');
+                authTab.classList.add('border', 'border-blue-600', 'text-blue-600');
+
+                authInput.classList.add('hidden');
+                authInstruction.classList.add('hidden');
+                recoveryInput.classList.remove('hidden');
+                recoveryInstruction.classList.remove('hidden');
+            }
+        }
+
+        // Show default tab on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            showTab('auth');
+        });
+    </script>
+</body>
+</html>

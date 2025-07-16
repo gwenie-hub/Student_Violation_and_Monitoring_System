@@ -1,41 +1,31 @@
 @extends('layouts.app')
 
-@section('sidebar')
-    @include('partials.sidebar-disciplinary')
-@endsection
-
 @section('content')
-<div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">Notify Parents</h1>
+<main class="p-6 max-w-2xl mx-auto">
+    <h2 class="text-2xl font-bold mb-4">Notify Parents via Email</h2>
 
-    @if (session('success'))
-        <div class="bg-green-100 text-green-800 px-4 py-2 rounded mb-4">
+    @if(session('success'))
+        <div class="bg-green-100 text-green-800 p-4 rounded mb-4">
             {{ session('success') }}
         </div>
     @endif
 
-    <form method="POST" action="{{ route('parents.notify.send') }}" class="space-y-4 max-w-lg">
+    <form action="{{ route('disciplinary.notify.parents.send') }}" method="POST" class="space-y-4">
         @csrf
 
-        {{-- Student Name (Read-only Input) --}}
         <div>
-            <label class="block mb-1 font-medium">Student Name</label>
-            <input type="text" name="student_name" value="{{ old('student_name') }}" class="w-full border rounded px-4 py-2" placeholder="Enter student name" required>
+            <label for="email" class="block font-semibold mb-1">Parent Email Address</label>
+            <input type="email" name="email" id="email" class="w-full border border-gray-300 p-2 rounded" required>
         </div>
 
-        {{-- Parent Email --}}
         <div>
-            <label class="block mb-1 font-medium">Parent Email</label>
-            <input type="email" name="parent_email" value="{{ old('parent_email') }}" class="w-full border rounded px-4 py-2" placeholder="Enter parent email" required>
+            <label for="summary" class="block font-semibold mb-1">Violation Summary</label>
+            <textarea name="summary" id="summary" rows="5" class="w-full border border-gray-300 p-2 rounded" required></textarea>
         </div>
 
-        {{-- Message to Parent --}}
-        <div>
-            <label class="block mb-1 font-medium">Message</label>
-            <textarea name="message" rows="4" class="w-full border rounded px-4 py-2" placeholder="Enter message to parent..." required>{{ old('message') }}</textarea>
-        </div>
-
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Send Notification</button>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Send Email
+        </button>
     </form>
-</div>
+</main>
 @endsection

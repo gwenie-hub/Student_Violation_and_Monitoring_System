@@ -1,4 +1,5 @@
 <div class="d-flex flex-column align-items-center">
+
     @if ($currentPhoto)
         <img 
             src="{{ asset('storage/' . $currentPhoto) }}" 
@@ -14,19 +15,28 @@
         </div>
     @endif
 
-    {{-- ✅ Full Name Display --}}
+    {{-- ✅ Full Name --}}
     <div class="fw-semibold text-center mb-2">
         {{ Auth::user()->fname }} {{ Auth::user()->mname }} {{ Auth::user()->lname }}
     </div>
 
+    {{-- ✅ Upload Form --}}
     <form wire:submit.prevent="updatedPhoto" class="w-100 text-center">
         <label for="photoUpload" class="btn btn-sm btn-outline-primary">
             <i class="bi bi-upload"></i> Change Photo
         </label>
         <input type="file" wire:model="photo" id="photoUpload" class="d-none">
+
         @error('photo') 
             <div class="text-danger small mt-1">{{ $message }}</div> 
         @enderror
     </form>
+
+    {{-- ✅ Flash Message --}}
+    @if (session()->has('success'))
+        <div class="text-success small mt-2">
+            {{ session('success') }}
+        </div>
+    @endif
 
 </div>

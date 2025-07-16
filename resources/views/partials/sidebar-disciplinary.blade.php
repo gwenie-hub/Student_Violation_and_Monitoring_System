@@ -22,8 +22,8 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a href="#" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
+            <li>
+                <a href="{{ route('disciplinary.notify.parents') }}" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
                     <i class="bi bi-envelope-fill fs-5 text-primary"></i>
                     <span>Notify Parents</span>
                 </a>

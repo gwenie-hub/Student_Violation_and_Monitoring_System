@@ -4,21 +4,25 @@ namespace App\Http\Controllers\Disciplinary;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ParentViolationNotification;
 
 class ParentNotificationController extends Controller
 {
-    public function send(Request $request)
+    public function showForm()
+    {
+        return view('disciplinary.notify-parents');
+    }
+
+    public function sendEmail(Request $request)
     {
         $request->validate([
-            'student_name' => 'required|string|max:255',
-            'parent_email' => 'required|email|max:255',
-            'message' => 'required|string|max:1000',
+            'email' => 'required|email',
+            'summary' => 'required|string|max:1000',
         ]);
 
-        // Simulate notifying parent (e.g. via email or DB record)
-        // For now, just return a success message
+        Mail::to($request->email)->send(new ParentViolationNotification($request->summary));
 
-        // You can implement actual email sending later
-        return back()->with('success', 'Notification sent to parent of ' . $request->student_name);
+        return back()->with('success', 'Email has been sent successfully!');
     }
 }

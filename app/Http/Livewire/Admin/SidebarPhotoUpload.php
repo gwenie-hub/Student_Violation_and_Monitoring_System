@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class SidebarPhotoUpload extends Component
 {
@@ -15,32 +16,34 @@ class SidebarPhotoUpload extends Component
 
     public function mount()
     {
-        $this->currentPhoto = auth()->user()->profile_photo_path;
+        $this->currentPhoto = Auth::user()->profile_photo_path;
     }
 
     public function updatedPhoto()
     {
         $this->validate([
-            'photo' => 'image', // No size restriction
+            'photo' => 'image', // Validate that the uploaded file is an image
         ]);
 
-        $user = auth()->user();
+        $user = Auth::user();
 
-        // Delete old photo if exists
+        // Delete old photo if it exists
         if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {
             Storage::disk('public')->delete($user->profile_photo_path);
         }
 
-        // Store new photo
+        // Store new photo in storage/app/public/profile_photos
         $path = $this->photo->store('profile_photos', 'public');
 
-        // Save to correct column
-        $user->profile_photo_path = $path;
-        $user->save();
+        // Update user profile
+        $user->update([
+            'profile_photo_path' => $path,
+        ]);
 
+        // Update Livewire state
         $this->currentPhoto = $path;
 
-        session()->flash('success', 'Profile photo updated.');
+        session()->flash('success', 'Profile photo updated successfully.');
     }
 
     public function render()

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\ViolationController;
 use App\Http\Controllers\Disciplinary\ParentNotificationController;
+use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController;
 use App\Models\{User, Student, Violation, SystemLog};
 use App\Http\Livewire\{
     ViolationForm,
@@ -20,6 +21,7 @@ use App\Http\Livewire\{
     SuperAdmin\StudentRecords
 };
 
+use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\StudentViolationController;
 use App\Livewire\Admin\ApprovedViolations;
 use App\Livewire\Admin\PendingViolations;
@@ -45,21 +47,18 @@ Route::get('/dashboard', function () {
     };
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/two-factor-challenge', fn () => view('auth.two-factor-challenge'))
+    ->middleware('guest')
+    ->name('two-factor.login');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/user/profile', function () {
         return view('profile.show');
     })->name('profile.show');
 
     // ✅ SUPER ADMIN
-    Route::prefix('super-admin')->name('superadmin.')->group(function () {
-        Route::get('/dashboard', function () {
-            abort_unless(auth()->user()?->hasRole('super_admin'), 403);
-            return view('super-admin.dashboard', [
-                'totalUsers' => User::count(),
-                'totalStudents' => Student::count(),
-                'totalViolations' => Violation::count(),
-            ]);
-        })->name('dashboard');
+    Route::prefix('super-admin')->middleware(['auth'])->name('superadmin.')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::get('/users/create', fn() => view('super-admin.users.create'))->name('add-user');
         Route::get('/users/manage', fn() => view('super-admin.manage-accounts'))->name('manage-accounts');
@@ -139,19 +138,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return redirect()->route('disciplinary.dashboard')->with('success', 'Sanction applied successfully.');
         })->name('sanctions.apply.post');
 
-        // Additional routes
-        Route::view('/reports', 'disciplinary.reports')->name('reports');
-        Route::view('/notifications', 'disciplinary.notifications')->name('notifications');
-
-        Route::get('/parents/notify', function () {
-            $violations = \App\Models\Violation::with(['student', 'reporter'])->latest()->get();
-            return view('disciplinary.notify-parents', compact('violations'));
-        })->name('parents.notify');
-
-        Route::post('/parents/notify/send', [\App\Http\Controllers\Disciplinary\ParentNotificationController::class, 'send'])->name('parents.notify.send');
-
-        Route::view('/status/index', 'disciplinary.status-tracking')->name('report.status');
-        Route::view('/tracking', 'disciplinary.tracking')->name('tracking.status');
+        Route::get('/notify-parents', [ParentNotificationController::class, 'showForm'])->name('notify.parents');
+        Route::post('/notify-parents/send', [ParentNotificationController::class, 'sendEmail'])->name('notify.parents.send');
+        
         Route::get('/settings', fn() => view('profile.show'))->name('settings');
     });
 
