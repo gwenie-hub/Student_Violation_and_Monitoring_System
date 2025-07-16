@@ -31,7 +31,8 @@
         </ul>
     </nav>
 
-    <form method="POST" action="{{ route('logout') }}" class="mt-4">
+    <form method="POST" action="{{ route('custom.logout') }}" class="mt-4">
+        @csrf
         @csrf
         <button type="submit" class="btn d-flex align-items-center gap-2 w-100 text-danger bg-light border-0 rounded px-3 py-2 fw-semibold">
             <i class="bi bi-box-arrow-right fs-5"></i>

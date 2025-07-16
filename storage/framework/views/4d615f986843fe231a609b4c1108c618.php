@@ -1,56 +1,56 @@
-@extends('layouts.guest')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-600 to-blue-600 py-12 px-4 sm:px-6 lg:px-8">
     <div class="w-full max-w-md space-y-8">
 
-        {{-- Logo Section --}}
+        
         <div class="text-center">
             <a href="/">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-16 h-16 mx-auto rounded-full shadow-lg">
+                <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Logo" class="w-16 h-16 mx-auto rounded-full shadow-lg">
             </a>
         </div>
 
-        {{-- Login Form --}}
+        
         <div class="bg-white bg-opacity-90 p-6 rounded-lg shadow-lg text-gray-900">
-            @if (session('status'))
+            <?php if(session('status')): ?>
                 <div class="mb-4 font-medium text-sm text-green-600">
-                    {{ session('status') }}
+                    <?php echo e(session('status')); ?>
+
                 </div>
-            @endif
-            @if ($errors->has('recaptcha'))
+            <?php endif; ?>
+            <?php if($errors->has('recaptcha')): ?>
                 <div class="mb-4 font-medium text-sm text-red-600">
-                    {{ $errors->first('recaptcha') }}
+                    <?php echo e($errors->first('recaptcha')); ?>
+
                 </div>
-            @endif
+            <?php endif; ?>
 
-            <form method="POST" action="{{ route('login') }}" id="login-form">
-                @csrf
+            <form method="POST" action="<?php echo e(route('login')); ?>" id="login-form">
+                <?php echo csrf_field(); ?>
 
-                {{-- Email --}}
+                
                 <div class="mb-4">
                     <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                     <input id="email" type="email" name="email" required autofocus class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring focus:ring-blue-300">
                 </div>
 
-                {{-- Password --}}
+                
                 <div class="mb-4">
                     <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                     <input id="password" type="password" name="password" required class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:ring focus:ring-blue-300">
                 </div>
 
-                {{-- Remember Me --}}
+                
                 <div class="flex items-center mb-4">
                     <input type="checkbox" name="remember" id="remember" class="mr-2">
                     <label for="remember" class="text-sm text-gray-700">Remember me</label>
                 </div>
 
                 <div class="flex items-center justify-between">
-                    @if (Route::has('password.request'))
-                        <a class="text-sm text-blue-500 hover:underline" href="{{ route('password.request') }}">
+                    <?php if(Route::has('password.request')): ?>
+                        <a class="text-sm text-blue-500 hover:underline" href="<?php echo e(route('password.request')); ?>">
                             Forgot your password?
                         </a>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
                 <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
@@ -80,4 +80,6 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.guest', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\StudentViolationManagementSystem\resources\views/auth/login.blade.php ENDPATH**/ ?>

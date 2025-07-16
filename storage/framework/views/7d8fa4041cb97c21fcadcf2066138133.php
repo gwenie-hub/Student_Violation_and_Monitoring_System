@@ -5,33 +5,48 @@
 
 <!-- Sidebar -->
 <aside class="w-full md:w-72 bg-white shadow-lg border-end p-4 d-flex flex-column min-vh-100" style="font-family: 'Inter', sans-serif;">
-    {{-- Profile Photo Upload --}}
-    @livewire('admin.sidebar-photo-upload')
+    
+    <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('admin.sidebar-photo-upload');
 
-    {{-- Navigation --}}
+$__html = app('livewire')->mount($__name, $__params, 'lw-2744549009-0', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+
+    
     <nav class="flex-grow-1 mt-3">
         <ul class="nav flex-column gap-1 fw-medium text-primary">
             <li class="nav-item">
-                <a href="{{ route('professor.dashboard') }}" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
+                <a href="<?php echo e(route('professor.dashboard')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
                     <i class="bi bi-speedometer2 fs-5 text-primary"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('professor.violations.my') }}" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
+                <a href="<?php echo e(route('professor.violations.my')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
                     <i class="bi bi-journal-text fs-5 text-primary"></i>
                     <span>My Violations</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('professor.violations.create') }}" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
+                <a href="<?php echo e(route('professor.violations.create')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
                     <i class="bi bi-exclamation-triangle-fill fs-5 text-primary"></i>
                     <span>Report Violation</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('profile.show') }}"
-                   class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg {{ request()->routeIs('profile.show') ? 'active' : '' }}">
+                <a href="<?php echo e(route('profile.show')); ?>"
+                   class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg <?php echo e(request()->routeIs('profile.show') ? 'active' : ''); ?>">
                     <i class="bi bi-gear-fill fs-5 text-primary"></i>
                     <span>Settings</span>
                 </a>
@@ -39,10 +54,10 @@
         </ul>
     </nav>
 
-    {{-- Logout --}}
-    <form method="POST" action="{{ route('custom.logout') }}" class="mt-4">
-        @csrf
-        @csrf
+    
+    <form method="POST" action="<?php echo e(route('custom.logout')); ?>" class="mt-4">
+        <?php echo csrf_field(); ?>
+        <?php echo csrf_field(); ?>
         <button type="submit" class="btn d-flex align-items-center gap-2 w-100 text-danger bg-light border-0 rounded px-3 py-2 fw-semibold">
             <i class="bi bi-box-arrow-right fs-5"></i>
             <span>Logout</span>
@@ -62,3 +77,4 @@
         color: #0d6efd !important;
     }
 </style>
+<?php /**PATH C:\laragon\www\StudentViolationManagementSystem\resources\views/partials/sidebar-professor.blade.php ENDPATH**/ ?>
