@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Welcome - Student Violation Monitoring System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
     <style>
         body, html {
@@ -14,7 +14,7 @@
         }
 
         .bg-image {
-            background-image: url('{{ asset('images/school.jpg') }}');
+            background-image: url('<?php echo e(asset('images/school.jpg')); ?>');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -61,7 +61,7 @@
 </head>
 <body>
     <div class="bg-image">
-        <a href="{{ route('login') }}" class="login-button bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
+        <a href="<?php echo e(route('login')); ?>" class="login-button bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
             Login
         </a>
 
@@ -84,3 +84,4 @@
     </div>
 </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\StudentViolationAndMonitoring_System\resources\views/welcome.blade.php ENDPATH**/ ?>

@@ -6,7 +6,9 @@
 </head>
 <body>
     <div style="white-space: pre-wrap; font-family: Times New Roman, sans-serif; font-size: 15px; line-height: 1.0;">
-        {{ $summary }}
+        <?php echo e($summary); ?>
+
     </div>
 </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\StudentViolationAndMonitoring_System\resources\views/emails/parent-violation.blade.php ENDPATH**/ ?>

@@ -8,8 +8,6 @@ use Illuminate\Queue\SerializesModels;
 
 class ParentViolationNotification extends Mailable
 {
-    use Queueable, SerializesModels;
-
     public $summary;
 
     public function __construct($summary)
@@ -20,6 +18,7 @@ class ParentViolationNotification extends Mailable
     public function build()
     {
         return $this->subject('Student Violation Summary')
-                    ->view('emails.parent-violation');
+                    ->view('emails.parent-violation')
+                    ->with(['summary' => $this->summary]);
     }
 }
