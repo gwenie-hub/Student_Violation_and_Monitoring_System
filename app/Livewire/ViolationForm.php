@@ -1,10 +1,11 @@
 <?php
+
 namespace App\Livewire;
+use App\Models\SystemLog;
 
 use Livewire\Component;
 use App\Models\StudentViolation;
 use Illuminate\Support\Facades\Auth;
-
 class ViolationForm extends Component
 {
     public $student_id;
@@ -31,7 +32,7 @@ class ViolationForm extends Component
     {
         $this->validate();
 
-        StudentViolation::create([
+        $violation = StudentViolation::create([
             'student_id'    => $this->student_id,
             'last_name'     => $this->last_name,
             'first_name'    => $this->first_name,
@@ -41,7 +42,14 @@ class ViolationForm extends Component
             'violation'     => $this->violation,
             'offense_type'  => $this->offense_type,
             'status'        => 'pending',
-            'reported_by'   => Auth::id(), // ✅ Fix for missing field
+            'reported_by'   => Auth::id(),
+        ]);
+
+        // Log creation
+        SystemLog::create([
+            'user_id' => Auth::id(),
+            'name' => Auth::user()->name ?? (Auth::user()->fname . ' ' . Auth::user()->lname),
+            'action' => 'created student violation ID: ' . $violation->id,
         ]);
 
         session()->flash('success', 'Violation submitted successfully.');

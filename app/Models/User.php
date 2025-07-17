@@ -91,5 +91,10 @@ class User extends Authenticatable
         return $this->hasMany(StudentViolation::class, 'student_id');
     }
 
+    public function getNameAttribute()
+    {
+        return trim(collect([$this->fname, $this->mname, $this->lname])->filter()->implode(' '));
+    }
+
 
 }

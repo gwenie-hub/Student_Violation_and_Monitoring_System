@@ -50,7 +50,7 @@
                         <td class="border border-gray-200 p-3 text-sm">{{ $v->sanction }}</td>
                         <td class="border border-gray-200 p-3 text-center">
                             <button 
-                                onclick="confirmArchive({{ $v->id }})"
+                                wire:click="archiveViolation({{ $v->id }})"
                                 class="inline-flex items-center px-3 py-1 text-red-600 hover:bg-red-100 rounded transition duration-150 font-semibold"
                                 wire:loading.attr="disabled"
                             >
@@ -76,11 +76,12 @@
     </div>
 
     {{-- Archive Confirm Script --}}
+    {{-- Optionally, add a JS confirm dialog for extra safety --}}
     <script>
-        function confirmArchive(id) {
-            if (confirm('Are you sure you want to archive this violation?')) {
-                Livewire.emit('archiveViolation', id);
-            }
-        }
+        document.addEventListener('livewire:load', function () {
+            Livewire.on('violationArchived', () => {
+                // Optionally show a toast or notification
+            });
+        });
     </script>
 </div>

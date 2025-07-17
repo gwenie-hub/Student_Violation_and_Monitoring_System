@@ -48,6 +48,12 @@ Route::get('/dashboard', function () {
     };
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+// 2FA Recovery
+use App\Http\Controllers\Auth\Recover2FAController;
+Route::get('/recover-2fa', [Recover2FAController::class, 'showForm'])->middleware('guest')->name('2fa.recover.form');
+Route::post('/recover-2fa', [Recover2FAController::class, 'recover'])->middleware('guest')->name('2fa.recover');
+
 Route::get('/two-factor-challenge', fn () => view('auth.two-factor-challenge'))
     ->middleware('guest')
     ->name('two-factor.login');
@@ -65,11 +71,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/users/manage', fn() => view('super-admin.manage-accounts'))->name('manage-accounts');
         Route::get('/student_records', StudentRecords::class)->name('student-records');
         Route::get('/system/logs', fn() => view('super-admin.system-logs', ['logs' => SystemLog::with('user')->latest()->paginate(10)]))->name('system-logs');
-        Route::get('/reports', fn() => view('super-admin.reports-status', ['reports' => Violation::with('student')->latest()->paginate(10)]))->name('reports-status');
         Route::get('/settings', fn() => view('profile.show'))->name('settings');
         Route::get('/manage-accounts', ManageAccounts::class)
         ->name('manage-accounts');
-        Route::get('/superadmin/student-records', StudentRecords::class)->name('superadmin.student-records');
     });
 
     // ✅ SCHOOL ADMIN

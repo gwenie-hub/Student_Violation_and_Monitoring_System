@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Http\Livewire\SuperAdmin;
+use App\Models\SystemLog;
 
 use Livewire\Component;
 use App\Models\User;
@@ -56,6 +56,13 @@ class AddUser extends Component
 
         // Send email with credentials
         Mail::to($user->email)->send(new SendCredentials($user, $tempPassword));
+
+        // Log the invitation in system logs
+        SystemLog::create([
+            'user_id' => auth()->id(),
+            'name' => auth()->user()->name ?? (auth()->user()->fname . ' ' . auth()->user()->lname),
+            'action' => 'invited user: ' . $user->email,
+        ]);
 
         session()->flash('success', 'User invited successfully and credentials sent.');
 

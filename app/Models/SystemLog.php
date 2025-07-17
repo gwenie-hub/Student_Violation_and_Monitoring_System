@@ -7,7 +7,7 @@ use App\Models\User;
 
 class SystemLog extends Model
 {
-    protected $fillable = ['user_id', 'action'];
+    protected $fillable = ['user_id', 'name', 'action'];
 
     public function user()
     {

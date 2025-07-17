@@ -1,20 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
-<main class="flex-1 p-8 bg-gray-100 text-black">
-    <h1 class="text-3xl font-bold mb-8">Super Admin Dashboard</h1>
+<main class="flex-grow-1 py-4 px-2 px-sm-4 px-md-5 bg-light text-black w-100">
+    <h1 class="fw-bold mb-4 fs-2 text-center text-md-start">Super Admin Dashboard</h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="row g-4 justify-content-center">
         {{-- Total Users --}}
-        <div class="bg-white rounded-2xl shadow-md p-6 border">
-            <h3 class="text-lg font-semibold mb-2 text-gray-700">Total Users</h3>
-            <p class="text-4xl font-extrabold text-blue-600">{{ $totalUsers }}</p>
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+            <div class="bg-white rounded-4 shadow-sm p-4 border h-100 d-flex flex-column align-items-center align-items-md-start">
+                <h3 class="fs-5 fw-semibold mb-2 text-secondary">Total Users</h3>
+                <p class="display-5 fw-bold text-primary mb-0">{{ $totalUsers }}</p>
+            </div>
         </div>
 
         {{-- Total Student Violations --}}
-        <div class="bg-white rounded-2xl shadow-md p-6 border">
-            <h3 class="text-lg font-semibold mb-2 text-gray-700">Total Student Violations</h3>
-            <p class="text-4xl font-extrabold text-red-600">{{ $totalViolations }}</p>
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+            <div class="bg-white rounded-4 shadow-sm p-4 border h-100 d-flex flex-column align-items-center align-items-md-start">
+                <h3 class="fs-5 fw-semibold mb-2 text-secondary">Total Student Violations</h3>
+                <p class="display-5 fw-bold text-danger mb-0">{{ $totalViolations }}</p>
+            </div>
         </div>
     </div>
 </main>

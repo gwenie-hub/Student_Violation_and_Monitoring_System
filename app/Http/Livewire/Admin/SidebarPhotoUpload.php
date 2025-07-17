@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SystemLog;
 
 class SidebarPhotoUpload extends Component
 {
@@ -43,6 +44,13 @@ class SidebarPhotoUpload extends Component
 
         // Refresh the authenticated user instance to get new photo path immediately
         Auth::setUser($user->fresh());
+
+        // Log profile photo update
+        SystemLog::create([
+            'user_id' => $user->id,
+            'name' => $user->name ?? ($user->fname . ' ' . $user->lname),
+            'action' => 'updated profile photo',
+        ]);
 
         session()->flash('success', 'Profile photo updated successfully.');
     }

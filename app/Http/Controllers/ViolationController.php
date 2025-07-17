@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Http\Controllers;
+use App\Models\SystemLog;
 
 use Illuminate\Http\Request;
 use App\Models\Violation;
@@ -51,11 +51,18 @@ class ViolationController extends Controller
             'Major' => 'red',
         ];
 
-        Violation::create([
+        $violation = Violation::create([
             'student_id' => $request->student_id,
             'description' => $request->description,
             'severity_level' => $request->severity_level,
             'color' => $colorMap[$request->severity_level] ?? 'gray',
+        ]);
+
+        // Log creation
+        SystemLog::create([
+            'user_id' => auth()->id(),
+            'name' => auth()->user()->name ?? (auth()->user()->fname . ' ' . auth()->user()->lname),
+            'action' => 'created violation ID: ' . $violation->id,
         ]);
 
         return redirect()->route('violations.index');
@@ -72,7 +79,14 @@ class ViolationController extends Controller
     {
         $violation = \App\Models\StudentViolation::findOrFail($id);
         $violation->delete();
-    
+
+        // Log deletion
+        SystemLog::create([
+            'user_id' => auth()->id(),
+            'name' => auth()->user()->name ?? (auth()->user()->fname . ' ' . auth()->user()->lname),
+            'action' => 'deleted violation ID: ' . $id,
+        ]);
+
         return redirect()->back()->with('success', 'Violation deleted successfully.');
     }
     

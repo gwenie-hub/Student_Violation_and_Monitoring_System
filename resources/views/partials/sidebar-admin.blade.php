@@ -22,11 +22,20 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('profile.show') }}"
-                   class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg {{ request()->routeIs('profile.show') ? 'active' : '' }}">
+                <button class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-primary hover-bg w-100 border-0 bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#settingsMenu" aria-expanded="false" aria-controls="settingsMenu">
                     <i class="bi bi-gear-fill fs-5 text-primary"></i>
                     <span>Settings</span>
-                </a>
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </button>
+                <div class="collapse" id="settingsMenu">
+                    <ul class="nav flex-column ms-4 mt-1">
+                        <li><a href="{{ route('profile.show', ['section' => 'profile-info']) }}" class="nav-link px-2 py-1 text-primary">Profile Info</a></li>
+                        <li><a href="{{ route('profile.show', ['section' => 'change-password']) }}" class="nav-link px-2 py-1 text-primary">Change Password</a></li>
+                        <li><a href="{{ route('profile.show', ['section' => 'two-factor']) }}" class="nav-link px-2 py-1 text-primary">Two Factor Auth</a></li>
+                        <li><a href="{{ route('profile.show', ['section' => 'logout-sessions']) }}" class="nav-link px-2 py-1 text-primary">Logout Sessions</a></li>
+                        <li><a href="{{ route('profile.show', ['section' => 'delete-account']) }}" class="nav-link px-2 py-1 text-danger">Delete Account</a></li>
+                    </ul>
+                </div>
             </li>
         </ul>
     </nav>

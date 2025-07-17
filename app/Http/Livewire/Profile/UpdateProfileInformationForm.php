@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Http\Livewire\Profile;
+use App\Models\SystemLog;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -41,11 +41,20 @@ class UpdateProfileInformationForm extends Component
             ],
         ]);
 
-        Auth::user()->update([
+
+        $user = Auth::user();
+        $user->update([
             'fname' => $this->state['fname'],
             'mname' => $this->state['mname'],
             'lname' => $this->state['lname'],
             'email' => $this->state['email'],
+        ]);
+
+        // Log profile update
+        SystemLog::create([
+            'user_id' => $user->id,
+            'name' => $user->name ?? ($user->fname . ' ' . $user->lname),
+            'action' => 'updated profile information',
         ]);
 
         $this->dispatch('saved'); // For <x-action-message>

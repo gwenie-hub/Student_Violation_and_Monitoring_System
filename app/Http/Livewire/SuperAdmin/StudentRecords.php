@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Http\Livewire\SuperAdmin;
+use App\Models\SystemLog;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -13,20 +13,9 @@ class StudentRecords extends Component
 
     public $offenseType = '';
 
-    protected $queryString = ['offenseType'];
+    protected $listeners = ['archiveViolation'];
 
-    protected $listeners = [
-        'filterByOffense' => 'setOffenseType',
-        'archiveViolation' => 'archiveViolation',
-    ];
-
-    public function setOffenseType($value)
-    {
-        $this->offenseType = $value;
-        $this->resetPage();
-    }
-
-    public function updatedOffenseType()
+    public function updatingOffenseType()
     {
         $this->resetPage();
     }
@@ -35,19 +24,26 @@ class StudentRecords extends Component
     {
         $violation = StudentViolation::findOrFail($id);
 
-        ArchivedStudentViolation::create([
-            'student_id'    => $violation->student_id,
-            'full_name'     => $violation->full_name,
-            'course'        => $violation->course,
-            'year_section'  => $violation->year_section,
-            'violation'     => $violation->violation,
-            'offense_type'  => $violation->offense_type,
-            'sanction'      => $violation->sanction,
+        // Insert all fields into archive table
+        $archiveData = $violation->toArray();
+        unset($archiveData['id']); // Remove id to avoid conflict
+        ArchivedStudentViolation::create($archiveData);
+
+        // Log archive action
+        SystemLog::create([
+            'user_id' => auth()->id(),
+            'name' => auth()->user()->name ?? (auth()->user()->fname . ' ' . auth()->user()->lname),
+            'action' => 'archived violation ID: ' . $violation->id,
         ]);
 
+        // Delete original
         $violation->delete();
 
+        // Flash message for UI
         session()->flash('message', 'Violation has been archived successfully.');
+
+        // Optional: dispatch to show toast in frontend (Livewire v3+)
+        $this->dispatch('violationArchived');
     }
 
     public function render()

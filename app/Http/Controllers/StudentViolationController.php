@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Http\Controllers;
+use App\Models\SystemLog;
 
 use Illuminate\Http\Request;
 use App\Models\StudentViolation;
@@ -29,7 +29,7 @@ class StudentViolationController extends Controller
             'offense_type'  => 'required|in:Minor,Major',
         ]);
 
-        StudentViolation::create([
+        $violation = StudentViolation::create([
             'student_id'    => $request->student_id,
             'last_name'     => $request->last_name,
             'first_name'    => $request->first_name,
@@ -38,7 +38,14 @@ class StudentViolationController extends Controller
             'year_section'  => $request->year_section,
             'violation'     => $request->violation,
             'offense_type'  => $request->offense_type,
-            'reported_by'   => Auth::id(), // 👈 Automatically inserts professor's ID
+            'reported_by'   => Auth::id(),
+        ]);
+
+        // Log creation
+        SystemLog::create([
+            'user_id' => Auth::id(),
+            'name' => Auth::user()->name ?? (Auth::user()->fname . ' ' . Auth::user()->lname),
+            'action' => 'created student violation ID: ' . $violation->id,
         ]);
 
         return redirect()->route('violations.my')->with('success', 'Violation submitted successfully.');

@@ -14,6 +14,8 @@ class DeleteUser implements DeletesUsers
     {
         $user->deleteProfilePhoto();
         $user->tokens->each->delete();
+        // Log system event before deleting
+        \App\Actions\System\LogUserAction::log('Deleted account', 'User ID: ' . $user->id);
         $user->delete();
     }
 }
