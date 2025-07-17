@@ -29,6 +29,7 @@ use App\Livewire\Admin\ViolationStatusView;
 use App\Livewire\Admin\AllViolations;
 use App\Models\StudentViolation;
 use App\Http\Livewire\Disciplinary\ViolationRecords;
+use App\Http\Livewire\SuperAdmin\ManageAccounts;
 
 // 🏠 Welcome Page
 Route::get('/', fn() => view('welcome'));
@@ -66,6 +67,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/system/logs', fn() => view('super-admin.system-logs', ['logs' => SystemLog::with('user')->latest()->paginate(10)]))->name('system-logs');
         Route::get('/reports', fn() => view('super-admin.reports-status', ['reports' => Violation::with('student')->latest()->paginate(10)]))->name('reports-status');
         Route::get('/settings', fn() => view('profile.show'))->name('settings');
+        Route::get('/manage-accounts', ManageAccounts::class)
+        ->name('manage-accounts');
+        Route::get('/superadmin/student-records', StudentRecords::class)->name('superadmin.student-records');
     });
 
     // ✅ SCHOOL ADMIN

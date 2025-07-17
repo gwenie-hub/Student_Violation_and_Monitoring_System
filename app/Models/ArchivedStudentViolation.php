@@ -2,16 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class StudentViolation extends Model
+class ArchivedStudentViolation extends Model
 {
     use HasFactory;
 
-    // Explicit table definition (optional)
-    protected $table = 'student_violations';
-    protected $dates = ['archived_at'];
+    protected $table = 'archived_student_violations';
 
     protected $fillable = [
         'student_id',
@@ -27,25 +25,16 @@ class StudentViolation extends Model
         'sanction',
     ];
 
-    /**
-     * Relationship to the student who committed the violation.
-     */
     public function student()
     {
         return $this->belongsTo(User::class, 'student_id');
     }
 
-    /**
-     * Relationship to the reporter of the violation.
-     */
     public function reporter()
     {
         return $this->belongsTo(User::class, 'reported_by');
     }
 
-    /**
-     * Accessor to get the full name.
-     */
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->middle_name} {$this->last_name}";

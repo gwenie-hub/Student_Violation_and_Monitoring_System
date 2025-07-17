@@ -3,7 +3,7 @@
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
-[$__name, $__params] = $__split(App\Http\Livewire\SuperAdmin\ManageAccounts::class);
+[$__name, $__params] = $__split('super-admin.manage-accounts');
 
 $__html = app('livewire')->mount($__name, $__params, 'lw-2900481498-0', $__slots ?? [], get_defined_vars());
 

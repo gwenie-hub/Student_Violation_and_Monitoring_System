@@ -36,6 +36,7 @@ class User extends Authenticatable
         'email',
         'password',
         'photo',
+        'profile_photo_path',
     ];
 
     /**
@@ -82,6 +83,12 @@ class User extends Authenticatable
     public function violations()
     {
         return $this->hasMany(\App\Models\Violation::class);
+    }
+
+
+    public function studentViolations()
+    {
+        return $this->hasMany(StudentViolation::class, 'student_id');
     }
 
 

@@ -1,4 +1,5 @@
-@extends('layouts.app') {{-- Or whatever layout you use --}}
+@extends('layouts.super-admin')
 
 @section('content')
+@livewire('super-admin.student-records')
 @endsection

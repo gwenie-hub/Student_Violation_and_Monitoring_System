@@ -1,5 +1,5 @@
 @extends('layouts.super-admin')
 
 @section('content')
-@livewire(App\Http\Livewire\SuperAdmin\ManageAccounts::class)
+@livewire('super-admin.manage-accounts')
 @endsection

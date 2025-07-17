@@ -12,36 +12,37 @@ class SidebarPhotoUpload extends Component
     use WithFileUploads;
 
     public $photo;
-    public $currentPhoto;
-
-    public function mount()
-    {
-        $this->currentPhoto = Auth::user()->profile_photo_path;
-    }
 
     public function updatedPhoto()
     {
         $this->validate([
-            'photo' => 'image', // Validate that the uploaded file is an image
+            'photo' => 'image',
         ]);
 
         $user = Auth::user();
 
-        // Delete old photo if it exists
+        // Delete old photo if exists
         if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {
             Storage::disk('public')->delete($user->profile_photo_path);
         }
 
-        // Store new photo in storage/app/public/profile_photos
+        // Store new photo on public disk inside profile_photos folder
         $path = $this->photo->store('profile_photos', 'public');
 
-        // Update user profile
-        $user->update([
-            'profile_photo_path' => $path,
-        ]);
+        // Make sure file is publicly visible
+        Storage::disk('public')->setVisibility($path, 'public');
 
-        // Update Livewire state
-        $this->currentPhoto = $path;
+        // Update user profile_photo_path and check if update succeeded
+        $updated = $user->update(['profile_photo_path' => $path]);
+
+        if (!$updated) {
+            session()->flash('error', 'Failed to update profile photo path in the database.');
+            \Log::error('Failed to update profile_photo_path for user ID: ' . $user->id);
+            return;
+        }
+
+        // Refresh the authenticated user instance to get new photo path immediately
+        Auth::setUser($user->fresh());
 
         session()->flash('success', 'Profile photo updated successfully.');
     }

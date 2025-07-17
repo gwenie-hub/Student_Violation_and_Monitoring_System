@@ -37,7 +37,8 @@ class AppServiceProvider extends ServiceProvider
     Livewire::component('disciplinary.violation-records', \App\Http\Livewire\Disciplinary\ViolationRecords::class);    
     Livewire::component('super-admin.add-user', \App\Http\Livewire\SuperAdmin\AddUser::class);
     Livewire::component('profile.two-factor-authentication-form', \App\Http\Livewire\Profile\TwoFactorAuthenticationForm::class);
-
+    Livewire::component('super-admin.manage-accounts', \App\Http\Livewire\SuperAdmin\ManageAccounts::class);
+    Livewire::component('super-admin.student-records', \App\Http\Livewire\SuperAdmin\StudentRecords::class);
     Blade::component('authentication-card', \App\View\Components\AuthenticationCard::class);
     Blade::component('authentication-card-logo', \App\View\Components\AuthenticationCardLogo::class);
 

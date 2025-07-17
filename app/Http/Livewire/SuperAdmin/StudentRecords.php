@@ -4,43 +4,62 @@ namespace App\Http\Livewire\SuperAdmin;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\User;
+use App\Models\StudentViolation;
+use App\Models\ArchivedStudentViolation;
 
 class StudentRecords extends Component
 {
     use WithPagination;
 
-    public $search = '';
+    public $offenseType = '';
 
-    protected $queryString = ['search'];
+    protected $queryString = ['offenseType'];
 
-    public function updatingSearch()
+    protected $listeners = [
+        'filterByOffense' => 'setOffenseType',
+        'archiveViolation' => 'archiveViolation',
+    ];
+
+    public function setOffenseType($value)
+    {
+        $this->offenseType = $value;
+        $this->resetPage();
+    }
+
+    public function updatedOffenseType()
     {
         $this->resetPage();
     }
 
-    public function deleteStudent($id)
+    public function archiveViolation($id)
     {
-        $student = User::findOrFail($id);
-        $student->delete();
+        $violation = StudentViolation::findOrFail($id);
 
-        session()->flash('message', 'Student deleted successfully.');
+        ArchivedStudentViolation::create([
+            'student_id'    => $violation->student_id,
+            'full_name'     => $violation->full_name,
+            'course'        => $violation->course,
+            'year_section'  => $violation->year_section,
+            'violation'     => $violation->violation,
+            'offense_type'  => $violation->offense_type,
+            'sanction'      => $violation->sanction,
+        ]);
+
+        $violation->delete();
+
+        session()->flash('message', 'Violation has been archived successfully.');
     }
 
     public function render()
     {
-        $students = User::whereHas('roles', fn ($q) => $q->where('name', 'student'))
-            ->where(function ($query) {
-                $query->where('fname', 'like', "%{$this->search}%")
-                      ->orWhere('email', 'like', "%{$this->search}%");
-            })
-            ->orderBy('name')
-            ->paginate(5); // smaller page size to reduce memory load
+        $query = StudentViolation::query();
 
-            return view('livewire.super-admin.student-records', [
-                'students' => $students,
-            ]);
-            
-        
+        if (!empty($this->offenseType)) {
+            $query->where('offense_type', $this->offenseType);
+        }
+
+        return view('livewire.super-admin.student-records', [
+            'violations' => $query->orderBy('created_at', 'desc')->paginate(10),
+        ]);
     }
 }

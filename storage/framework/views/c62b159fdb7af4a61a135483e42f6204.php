@@ -1,8 +1,12 @@
 <div class="d-flex flex-column align-items-center">
 
-    <!--[if BLOCK]><![endif]--><?php if($currentPhoto): ?>
+    <?php
+        $photoPath = Auth::user()->profile_photo_path;
+    ?>
+
+    <!--[if BLOCK]><![endif]--><?php if($photoPath && file_exists(public_path('storage/' . $photoPath))): ?>
         <img 
-            src="<?php echo e(asset('storage/' . $currentPhoto)); ?>" 
+            src="<?php echo e(asset('storage/' . $photoPath) . '?' . time()); ?>" 
             alt="Profile Photo" 
             class="rounded-circle shadow mb-2"
             style="width: 80px; height: 80px; object-fit: cover;"
@@ -44,6 +48,13 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
     <!--[if BLOCK]><![endif]--><?php if(session()->has('success')): ?>
         <div class="text-success small mt-2">
             <?php echo e(session('success')); ?>
+
+        </div>
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+
+    <?php if(session()->has('error')): ?>
+        <div class="text-danger small mt-2">
+            <?php echo e(session('error')); ?>
 
         </div>
     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
