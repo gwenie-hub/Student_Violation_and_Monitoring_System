@@ -52,17 +52,19 @@ if (isset($__slots)) unset($__slots);
                     </ul>
                 </div>
             </li>
+
+            <!-- Logout Button placed directly after Settings with no gap -->
+            <li class="nav-item">
+                <form method="POST" action="<?php echo e(route('custom.logout')); ?>" class="w-100">
+                    <?php echo csrf_field(); ?>
+                    <button type="submit" class="btn d-flex align-items-center gap-2 w-100 text-danger bg-light border-0 rounded px-3 py-2 fw-semibold">
+                        <i class="bi bi-box-arrow-right fs-5"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </li>
         </ul>
     </nav>
-
-    <form method="POST" action="<?php echo e(route('custom.logout')); ?>" class="mt-4">
-        <?php echo csrf_field(); ?>
-        <?php echo csrf_field(); ?>
-        <button type="submit" class="btn d-flex align-items-center gap-2 w-100 text-danger bg-light border-0 rounded px-3 py-2 fw-semibold">
-            <i class="bi bi-box-arrow-right fs-5"></i>
-            <span>Logout</span>
-        </button>
-    </form>
 </aside>
 
 <style>
@@ -76,4 +78,5 @@ if (isset($__slots)) unset($__slots);
         font-weight: 600;
         color: #0d6efd !important;
     }
-</style><?php /**PATH C:\laragon\www\StudentViolationManagementSystem\resources\views/partials/sidebar-admin.blade.php ENDPATH**/ ?>
+</style>
+<?php /**PATH C:\laragon\www\StudentViolationManagementSystem\resources\views/partials/sidebar-admin.blade.php ENDPATH**/ ?>
