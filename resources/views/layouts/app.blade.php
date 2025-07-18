@@ -5,28 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- FontAwesome & Tailwind -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Favicon (optional) -->
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+
+    <!-- Tailwind & Livewire -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 
     <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
         #mainSidebar {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 16rem; /* Tailwind w-64 */
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 50;
-            background-color: white;
+            width: 16rem;
+            height: 100vh;
+            background-color: #ffffff;
             border-right: 1px solid #e5e7eb;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transform: translateX(-100%);
             transition: transform 0.3s ease-in-out;
+            z-index: 1040;
+            display: flex;
+            flex-direction: column;
         }
 
         #mainSidebar.show {
@@ -37,7 +50,6 @@
             flex: 1;
             overflow-y: auto;
             padding: 1rem;
-            position: relative;
         }
 
         .sidebar-content::-webkit-scrollbar {
@@ -45,12 +57,12 @@
         }
 
         .sidebar-content::-webkit-scrollbar-thumb {
-            background-color: #a78bfa; /* purple-400 */
+            background-color: #a78bfa;
             border-radius: 3px;
         }
 
         .sidebar-content::-webkit-scrollbar-track {
-            background-color: #f3f4f6; /* gray-100 */
+            background-color: #f3f4f6;
         }
 
         #scrollDownBtn {
@@ -69,78 +81,92 @@
         #scrollDownBtn:hover {
             background: #7c3aed;
         }
+
+        /* Ensure header stays on top */
+        .header-fixed {
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+        }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
+<body class="bg-light text-dark">
 
-<div class="flex min-h-screen relative">
+<div class="d-flex">
 
-    <!-- Sidebar (hidden by default) -->
+    <!-- Sidebar -->
     <aside id="mainSidebar">
-        <!-- Close Button -->
-        <div class="flex justify-end p-4">
-            <button id="closeSidebar" class="text-gray-500 text-xl">
-                <i class="fas fa-xmark"></i>
+        <div class="d-flex justify-content-end p-3">
+            <button id="closeSidebar" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-x-lg"></i>
             </button>
         </div>
 
-        <!-- Sidebar Content -->
         <div class="sidebar-content" id="sidebarScrollArea">
             @php $user = Auth::user(); @endphp
-            @if ($user->hasRole('super_admin'))
-                @include('partials.sidebar-superadmin')
-            @elseif ($user->hasRole('school_admin'))
-                @include('partials.sidebar-admin')
-            @elseif ($user->hasRole('professor'))
-                @include('partials.sidebar-professor')
-            @elseif ($user->hasRole('disciplinary_committee'))
-                @include('partials.sidebar-disciplinary')
-            @elseif ($user->hasRole('parent'))
-                @include('partials.sidebar-parent')
-            @endif
+
+            <nav class="nav flex-column">
+                @if ($user->hasRole('super_admin'))
+                    @include('partials.sidebar-superadmin')
+                @elseif ($user->hasRole('school_admin'))
+                    @include('partials.sidebar-admin')
+                @elseif ($user->hasRole('professor'))
+                    @include('partials.sidebar-professor')
+                @elseif ($user->hasRole('disciplinary_committee'))
+                    @include('partials.sidebar-disciplinary')
+                @elseif ($user->hasRole('parent'))
+                    @include('partials.sidebar-parent')
+                @endif
+            </nav>
         </div>
     </aside>
 
     <!-- Page Content -->
-    <div class="flex-1">
+    <div class="flex-grow-1 w-100" style="margin-left: 0;">
         <!-- Header -->
-        <div class="bg-white p-3 shadow z-50 w-full flex justify-between items-center sticky top-0">
-            <button id="toggleSidebar" class="text-purple-700 text-xl">
-                <i class="fas fa-bars"></i>
+        <header class="bg-white shadow p-3 d-flex justify-content-between align-items-center header-fixed">
+            <button id="toggleSidebar" class="btn btn-outline-primary">
+                <i class="bi bi-list"></i>
             </button>
-            <span class="font-semibold text-lg">{{ config('app.name', 'Laravel') }}</span>
-        </div>
+            <span class="fw-semibold fs-5">{{ config('app.name', 'Laravel') }}</span>
+        </header>
 
         <!-- Main Content -->
-        <main class="p-4 mt-4">
+        <main class="p-4 mt-3">
             @yield('content')
         </main>
     </div>
 </div>
 
-<!-- JavaScript Sidebar Toggle + Scroll Down -->
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
+    $(function () {
         const sidebar = $('#mainSidebar');
-        const scrollArea = $('#sidebarScrollArea');
 
-        // Open sidebar
         $('#toggleSidebar').on('click', function () {
-            sidebar.addClass('show');
+            sidebar.toggleClass('show');
         });
 
-        // Close sidebar
         $('#closeSidebar').on('click', function () {
             sidebar.removeClass('show');
         });
 
-        // Scroll down button
         $('#scrollDownBtn').on('click', function () {
-            scrollArea.animate({
-                scrollTop: scrollArea[0].scrollHeight
+            $('#sidebarScrollArea').animate({
+                scrollTop: $('#sidebarScrollArea')[0].scrollHeight
             }, 500);
         });
     });
+
+    $('#toggleSettingsMenu').on('click', function () {
+    $('#settingsMenuContainer').toggleClass('d-none');
+
+    // Optional: Toggle the arrow icon direction
+    const icon = $(this).find('i.bi-chevron-down');
+    icon.toggleClass('bi-chevron-down bi-chevron-up');
+    });
+
 </script>
 
 @livewireScripts

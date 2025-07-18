@@ -66,11 +66,6 @@
         Create Violation
     </a>
 
-    <!-- Search bar (Livewire-ready) -->
-    <input type="text" wire:model="search" placeholder="Search student..."
-           class="mb-4 px-4 py-2 border rounded-lg w-full" />
-
-
     <!-- Approved Violations Table -->
     <div class="overflow-x-auto rounded-3 shadow border bg-white font-roboto">
         <table class="w-full text-left min-w-[600px] align-middle table-modern text-sm">
@@ -80,7 +75,6 @@
                     <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Violation</th>
                     <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Date</th>
                     <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Status</th>
-                    <th class="px-3 py-2 font-semibold text-gray-700 whitespace-nowrap">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -95,15 +89,6 @@
                             <span class="d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill text-xs fw-semibold bg-success bg-opacity-10 text-success border border-success-subtle">
                                 <i class="bi bi-check-circle-fill me-1"></i> Approved
                             </span>
-                        </td>
-                        <td class="px-3 py-2">
-                            <form action="<?php echo e(route('professor.violations.destroy', $violation->id)); ?>" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this violation?');">
-                                <?php echo csrf_field(); ?>
-                                <?php echo method_field('DELETE'); ?>
-                                <button type="submit" class="d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill bg-danger bg-opacity-10 text-danger hover:bg-danger hover:bg-opacity-25 hover:text-danger-emphasis text-xs fw-medium border border-danger-subtle transition">
-                                    <i class="bi bi-trash"></i> Delete
-                                </button>
-                            </form>
                         </td>
                     </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>

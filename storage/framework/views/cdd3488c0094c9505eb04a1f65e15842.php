@@ -5,7 +5,7 @@ $__split = function ($name, $params = []) {
 };
 [$__name, $__params] = $__split('admin.sidebar-photo-upload');
 
-$__html = app('livewire')->mount($__name, $__params, 'lw-3270353619-0', $__slots ?? [], get_defined_vars());
+$__html = app('livewire')->mount($__name, $__params, 'lw-3842953539-0', $__slots ?? [], get_defined_vars());
 
 echo $__html;
 
@@ -20,23 +20,16 @@ if (isset($__slots)) unset($__slots);
         <ul class="nav flex-column gap-1 fw-medium text-primary">
 
             <li class="nav-item">
-                <a href="<?php echo e(route('professor.dashboard')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-speedometer2 fs-5 text-primary"></i>
+                <a href="<?php echo e(route('admin.dashboard')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
+                    <i class="bi bi-house-door-fill fs-5 text-primary"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a href="<?php echo e(route('professor.violations.my')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
+                <a href="<?php echo e(route('admin.student-violations')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
                     <i class="bi bi-journal-text fs-5 text-primary"></i>
-                    <span>My Violations</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a href="<?php echo e(route('professor.violations.create')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-exclamation-triangle-fill fs-5 text-primary"></i>
-                    <span>Report Violation</span>
+                    <span>Student Records</span>
                 </a>
             </li>
 
@@ -58,7 +51,7 @@ if (isset($__slots)) unset($__slots);
                     </ul>
                 </div>
             </li>
-            
+
             <!-- Logout -->
             <li class="nav-item mt-2">
                 <form method="POST" action="<?php echo e(route('custom.logout')); ?>" class="w-100">
@@ -72,4 +65,5 @@ if (isset($__slots)) unset($__slots);
 
         </ul>
     </nav>
-</aside><?php /**PATH C:\xampp\htdocs\StudentViolationAndMonitoring_System\resources\views/partials/sidebar-professor.blade.php ENDPATH**/ ?>
+</aside>
+<?php /**PATH C:\xampp\htdocs\StudentViolationAndMonitoring_System\resources\views/partials/sidebar-admin.blade.php ENDPATH**/ ?>
