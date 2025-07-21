@@ -1,10 +1,5 @@
-<!-- Include in <head> of layout -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-<!-- Sidebar Blade File: Updated Super Admin Sidebar -->
-<aside class="w-full md:w-72 bg-white shadow-lg border-end p-4 d-flex flex-column min-vh-100" style="font-family: 'Inter', sans-serif;">
+<aside class="w-100 d-flex flex-column bg-white shadow-sm border-end min-vh-100" style="font-family: 'Inter', sans-serif;">
     <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
@@ -21,61 +16,40 @@ unset($__params);
 unset($__split);
 if (isset($__slots)) unset($__slots);
 ?>
-
     <nav class="flex-grow-1 mt-3">
-        <ul class="nav flex-column gap-1 fw-medium text-primary">
+        <ul class="nav flex-column gap-1 fw-medium">
             <li class="nav-item">
-                <a href="<?php echo e(route('superadmin.dashboard')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-speedometer2 fs-5 text-primary"></i>
+                <a href="<?php echo e(route('superadmin.dashboard')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-dark sidebar-link">
+                    <i class="bi bi-house-door-fill fs-5"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?php echo e(route('superadmin.add-user')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-person-plus-fill fs-5 text-primary"></i>
-                    <span>Add User</span>
+                <a href="<?php echo e(route('superadmin.add-user')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-dark sidebar-link">
+                    <i class="bi bi-journal-text fs-5"></i>
+                    <span>Invite User</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?php echo e(route('superadmin.manage-accounts')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-people-fill fs-5 text-primary"></i>
-                    <span>Manage Accounts</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="<?php echo e(route('superadmin.student-records')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-journal-text fs-5 text-primary"></i>
-                    <span>Student Records</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="<?php echo e(route('superadmin.system-logs')); ?>" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-decoration-none text-primary hover-bg">
-                    <i class="bi bi-clipboard-data fs-5 text-primary"></i>
-                    <span>System Logs</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-primary hover-bg w-100 border-0 bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#settingsMenu" aria-expanded="false" aria-controls="settingsMenu">
-                    <i class="bi bi-gear-fill fs-5 text-primary"></i>
+                <button id="toggleSettingsMenu" class="nav-link d-flex align-items-center gap-2 rounded px-3 py-2 text-dark sidebar-link w-100 border-0 bg-transparent">
+                    <i class="bi bi-gear-fill fs-5"></i>
                     <span>Settings</span>
                     <i class="bi bi-chevron-down ms-auto"></i>
                 </button>
-                <div class="collapse" id="settingsMenu">
-                    <ul class="nav flex-column ms-4 mt-1">
-                        <li><a href="<?php echo e(route('profile.show', ['section' => 'profile-info'])); ?>" class="nav-link px-2 py-1 text-primary">Profile Info</a></li>
-                        <li><a href="<?php echo e(route('profile.show', ['section' => 'change-password'])); ?>" class="nav-link px-2 py-1 text-primary">Change Password</a></li>
-                        <li><a href="<?php echo e(route('profile.show', ['section' => 'two-factor'])); ?>" class="nav-link px-2 py-1 text-primary">Two Factor Auth</a></li>
-                        <li><a href="<?php echo e(route('profile.show', ['section' => 'logout-sessions'])); ?>" class="nav-link px-2 py-1 text-primary">Logout Sessions</a></li>
+                <div id="settingsMenuContainer" class="d-none ms-4 mt-1">
+                    <ul class="nav flex-column gap-1">
+                        <li><a href="<?php echo e(route('profile.show', ['section' => 'profile-info'])); ?>" class="nav-link px-2 py-1 text-dark">Profile Info</a></li>
+                        <li><a href="<?php echo e(route('profile.show', ['section' => 'change-password'])); ?>" class="nav-link px-2 py-1 text-dark">Change Password</a></li>
+                        <li><a href="<?php echo e(route('profile.show', ['section' => 'two-factor'])); ?>" class="nav-link px-2 py-1 text-dark">Two Factor Auth</a></li>
+                        <li><a href="<?php echo e(route('profile.show', ['section' => 'logout-sessions'])); ?>" class="nav-link px-2 py-1 text-dark">Logout Sessions</a></li>
                         <li><a href="<?php echo e(route('profile.show', ['section' => 'delete-account'])); ?>" class="nav-link px-2 py-1 text-danger">Delete Account</a></li>
                     </ul>
                 </div>
             </li>
-
-            <!-- Logout button directly under Settings with no gap -->
-            <li class="nav-item">
+            <li class="nav-item mt-2">
                 <form method="POST" action="<?php echo e(route('custom.logout')); ?>" class="w-100">
                     <?php echo csrf_field(); ?>
-                    <button type="submit" class="btn d-flex align-items-center gap-2 w-100 text-danger bg-light border-0 rounded px-3 py-2 fw-semibold">
+                    <button type="submit" class="btn d-flex align-items-center gap-2 w-100 text-danger bg-white border border-danger rounded px-3 py-2 fw-semibold sidebar-link">
                         <i class="bi bi-box-arrow-right fs-5"></i>
                         <span>Logout</span>
                     </button>
@@ -83,18 +57,8 @@ if (isset($__slots)) unset($__slots);
             </li>
         </ul>
     </nav>
+
+        </ul>
+    </nav>
 </aside>
-
-<style>
-    .hover-bg:hover {
-        background-color: #f0f8ff;
-        transition: background-color 0.2s ease-in-out, transform 0.2s ease;
-        transform: scale(1.01);
-    }
-
-    .nav-link.active, .nav-link:hover {
-        font-weight: 600;
-        color: #0d6efd !important;
-    }
-</style>
 <?php /**PATH C:\laragon\www\StudentViolationManagementSystem\resources\views/partials/sidebar-superadmin.blade.php ENDPATH**/ ?>

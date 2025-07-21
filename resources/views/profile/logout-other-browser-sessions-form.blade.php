@@ -1,9 +1,44 @@
-<div class="card shadow-sm border mb-4 bg-white" style="max-width: 650px; margin: 0 auto;">
-    <div class="card-header bg-white border-bottom pb-2">
-        <h5 class="mb-1 fw-semibold text-primary"><i class="bi bi-laptop me-2"></i>Browser Sessions</h5>
-        <p class="mb-0 text-muted small">Manage and log out your active sessions on other browsers and devices.</p>
-    </div>
-    <div class="card-body p-4">
+<style>
+    :root {
+        --main-blue: #1d3557;
+        --main-red: #e63946;
+        --main-white: #fff;
+        --main-light-blue: #e3eafc;
+        --main-light-red: #fde7eb;
+        --main-gray: #f1f3f5;
+        --main-dark: #22223b;
+    }
+    .profile-card {
+        border-radius: 1.1rem;
+        box-shadow: 0 2px 12px 0 rgba(29,53,87,0.13);
+        border: 2.5px solid var(--main-blue);
+        background: var(--main-white);
+        padding: 2rem 2.5rem 2rem 2.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .profile-card h2 {
+        color: var(--main-blue);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+    .profile-card .form-label {
+        color: var(--main-blue);
+        font-weight: 600;
+    }
+    .profile-card .form-control, .profile-card .form-select {
+        border: 1.5px solid var(--main-blue);
+        border-radius: 0.5rem;
+    }
+    .profile-card .form-control:focus, .profile-card .form-select:focus {
+        border-color: var(--main-red);
+        box-shadow: 0 0 0 0.2rem rgba(230,57,70,0.13);
+    }
+</style>
+
+<div class="profile-card mt-5 mb-5">
+    <h2 class="h4 mb-2"><i class="bi bi-laptop me-2"></i>Browser Sessions</h2>
+    <p class="mb-3 text-muted small">Manage and log out your active sessions on other browsers and devices.</p>
         <div class="mb-3 text-muted small">
             {{ __('If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.') }}
         </div>

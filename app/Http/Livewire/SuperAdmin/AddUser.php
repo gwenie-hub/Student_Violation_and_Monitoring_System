@@ -39,35 +39,43 @@ class AddUser extends Component
 
     public function addUser()
     {
-        $this->validate();
+        try {
+            $this->validate();
 
-        $tempPassword = Str::random(10);
+            $tempPassword = Str::random(10);
 
-        $user = User::create([
-            'email' => $this->email,
-            'password' => Hash::make($tempPassword),
-            'fname' => $this->fname,
-            'mname' => $this->mname,
-            'lname' => $this->lname,
-        ]);
+            $user = User::create([
+                'email' => $this->email,
+                'password' => Hash::make($tempPassword),
+                'fname' => $this->fname,
+                'mname' => $this->mname,
+                'lname' => $this->lname,
+            ]);
 
-        // Assign role via Spatie
-        $user->assignRole($this->role);
+            // Assign role via Spatie
+            $user->assignRole($this->role);
 
-        // Send email with credentials
-        Mail::to($user->email)->send(new SendCredentials($user, $tempPassword));
+            // Send email with credentials
+            Mail::to($user->email)->send(new SendCredentials($user, $tempPassword));
 
-        // Log the invitation in system logs
-        SystemLog::create([
-            'user_id' => auth()->id(),
-            'name' => auth()->user()->name ?? (auth()->user()->fname . ' ' . auth()->user()->lname),
-            'action' => 'invited user: ' . $user->email,
-        ]);
+            // Log the invitation in system logs
+            SystemLog::create([
+                'user_id' => auth()->id(),
+                'name' => auth()->user()->name ?? (auth()->user()->fname . ' ' . auth()->user()->lname),
+                'action' => 'invited user: ' . $user->email,
+            ]);
 
-        session()->flash('success', 'User invited successfully and credentials sent.');
+            session()->flash('success', 'User invited successfully and credentials sent.');
 
-        // Reset form fields
-        $this->reset(['email', 'fname', 'mname', 'lname', 'role']);
+            // Reset form fields
+            $this->reset(['email', 'fname', 'mname', 'lname', 'role']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Show only the first validation error as a flash error
+            $errorMsg = collect($e->validator->errors()->all())->first() ?? 'Validation error.';
+            session()->flash('error', $errorMsg);
+        } catch (\Exception $e) {
+            session()->flash('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
 
     public function render()

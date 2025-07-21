@@ -1,21 +1,50 @@
 <?php $__env->startSection('content'); ?>
-<div class="container mx-auto">
-    <h2 class="text-xl font-semibold mb-4">Profile Settings</h2>
+<style>
+    :root {
+        --main-blue: #1d3557;
+        --main-red: #e63946;
+        --main-white: #fff;
+        --main-light-blue: #e3eafc;
+        --main-light-red: #fde7eb;
+        --main-gray: #f1f3f5;
+        --main-dark: #22223b;
+    }
+    .profile-card {
+        border-radius: 1.1rem;
+        box-shadow: 0 2px 12px 0 rgba(29,53,87,0.13);
+        border: 2.5px solid var(--main-blue);
+        background: var(--main-white);
+        padding: 2rem 2.5rem 2rem 2.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .profile-card h1 {
+        color: var(--main-blue);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+    .profile-card .alert-success {
+        background: var(--main-light-blue);
+        color: var(--main-blue);
+        border: 1.5px solid var(--main-blue);
+        font-weight: 600;
+    }
+    .profile-card .alert-danger {
+        background: var(--main-light-red);
+        color: var(--main-red);
+        border: 1.5px solid var(--main-red);
+        font-weight: 600;
+    }
+</style>
+<div class="profile-card mt-5 mb-5">
+    <h1 class="h3 mb-4">Profile Settings</h1>
 
-    
     <?php if(session('status')): ?>
-        <div class="alert alert-success mb-4">
-            <?php echo e(session('status')); ?>
-
-        </div>
+        <div class="alert alert-success mb-4"><?php echo e(session('status')); ?></div>
     <?php elseif(session('message')): ?>
-        <div class="alert alert-success mb-4">
-            <?php echo e(session('message')); ?>
-
-        </div>
+        <div class="alert alert-success mb-4"><?php echo e(session('message')); ?></div>
     <?php endif; ?>
 
-    
     <div x-data="{ show: false, message: '' }"
          x-on:saved.window="show = true; message = '<?php echo e(session('message') ?? 'Saved.'); ?>'; setTimeout(() => show = false, 3000)"
          x-show="show"

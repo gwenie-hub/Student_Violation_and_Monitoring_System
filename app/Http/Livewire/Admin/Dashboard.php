@@ -13,19 +13,9 @@ class Dashboard extends Component
     public $totalStudents = 0;
     public $totalViolations = 0;
 
-    public function mount()
-    {
-        try {
-            $this->totalUsers = User::whereHas('roles', fn ($q) => $q->where('name', '!=', 'super_admin'))->count();
-            $this->totalStudents = Student::count();
-            $this->totalViolations = Violation::count();
-        } catch (\Exception $e) {
-            $this->addError('load', 'Error loading dashboard statistics.');
-        }
-    }
-
     public function render()
     {
-        return view('livewire.admin.dashboard');
+        $students = \App\Models\StudentViolation::latest()->paginate(10);
+        return view('livewire.admin.dashboard', compact('students'));
     }
 }

@@ -4,7 +4,6 @@
 
 <?php $__env->startSection('content'); ?>
 <div class="p-6">
-    <h1 class="text-2xl font-bold mb-6">Disciplinary Committee Dashboard</h1>
     <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];

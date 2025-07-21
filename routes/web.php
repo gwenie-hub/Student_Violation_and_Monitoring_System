@@ -1,4 +1,9 @@
+
 <?php
+
+// Disciplinary Violation Approve/Reject
+use App\Http\Controllers\DisciplinaryViolationController;
+Route::post('/disciplinary/violation-action', [DisciplinaryViolationController::class, 'action'])->name('disciplinary.violation.action');
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
@@ -78,7 +83,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // ✅ SCHOOL ADMIN
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
+        Route::get('/dashboard', function () {
+            $students = \App\Models\StudentViolation::latest()->paginate(10);
+            return view('admin.dashboard', compact('students'));
+        })->name('dashboard');
+
+        // Student Edit/Delete routes
+        Route::get('/students/{student}/edit', [\App\Http\Controllers\StudentController::class, 'edit'])->name('students.edit');
+        Route::post('/students', [\App\Http\Controllers\StudentController::class, 'store'])->name('students.store');
+        Route::put('/students/{student}', [\App\Http\Controllers\StudentController::class, 'update'])->name('students.update');
+        Route::delete('/students/{student}', [\App\Http\Controllers\StudentController::class, 'destroy'])->name('students.delete');
         Route::get('/users', UserManagement::class)->name('users');
         Route::get('/student-violations', [\App\Http\Controllers\StudentViolationController::class, 'index'])->name('student-violations');
         Route::get('/violations', AllViolations::class)->name('violations');
@@ -89,9 +103,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // ✅ PROFESSOR
     Route::prefix('professor')->name('professor.')->group(function () {
-        Route::get('/dashboard', fn() => view('professor.dashboard', [
-            'violations' => \App\Models\StudentViolation::where('status', 'approved')->latest()->paginate(10),
-        ]))->name('dashboard');
+        Route::get('/dashboard', function (\Illuminate\Http\Request $request) {
+            $filter = strtoupper(trim($request->input('filter', 'all')));
+            $query = \App\Models\StudentViolation::query()->where('status', 'approved');
+
+            if (in_array($filter, ['BSIT', 'BSBA', 'BSAIS', 'BSED'])) {
+                // Use whereRaw to match normalized course
+                $query->whereRaw('UPPER(TRIM(Course)) = ?', [$filter]);
+            }
+
+            $students = $query->paginate(15);
+            return view('professor.dashboard', compact('students'));
+        })->name('dashboard');
 
         Route::get('/violations/create', fn() => view('professor.violations.create'))->name('violations.create');
         Route::get('/violations', [StudentViolationController::class, 'index'])->name('violations.index');

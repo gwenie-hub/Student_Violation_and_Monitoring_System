@@ -8,6 +8,7 @@ class Dashboard extends Component
 {
     public function render()
     {
-        return view('admin.dashboard'); // Not livewire.admin.dashboard
+        $students = \App\Models\StudentViolation::with('student')->latest()->paginate(10);
+        return view('admin.dashboard', compact('students'));
     }
 }

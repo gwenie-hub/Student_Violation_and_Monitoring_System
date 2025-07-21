@@ -1,233 +1,206 @@
 
-@extends('layouts.app')
 
-@section('head')
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #ffffff;
-        }
-        h4, .table thead {
-            color: #0d6efd;
-        }
-        .table-hover tbody tr:hover {
-            background-color: #f1f9ff;
-            transition: background-color 0.2s ease-in-out;
-        }
-        .status-pending {
-            color: #6c757d;
-            font-style: italic;
-        }
-        .status-done {
-            color: #198754;
-            font-weight: 600;
-        }
-        .action-link {
-            color: #0d6efd;
-            text-decoration: none;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            transition: 0.2s ease-in-out;
-        }
-        .action-link:hover {
-            text-decoration: underline;
-        }
-        .table td, .table th {
-            vertical-align: middle;
-        }
-        .no-data {
-            background-color: #f8f9fc;
-        }
-        @media (max-width: 768px) {
-            .table-responsive {
-                font-size: 0.9rem;
-            }
-            h4 {
-                font-size: 1.25rem;
-            }
-        }
-        .scroll-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #0d6efd;
-            color: #fff;
-            border: none;
-            padding: 10px 12px;
-            border-radius: 50%;
-            font-size: 1.25rem;
-            display: none;
-            z-index: 1000;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        }
-        /* Blue/white theme improvements */
-        .table-primary {
-            background-color: #e7f1ff !important;
-            color: #0d6efd !important;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.2rem rgba(13,110,253,.15);
-        }
-        .btn-primary, .btn-outline-primary {
-            border-radius: 20px;
-        }
-        .btn-primary {
-            background: linear-gradient(90deg, #0d6efd 60%, #3b82f6 100%);
-            border: none;
-        }
-        .btn-outline-primary {
-            border: 1.5px solid #0d6efd;
-            color: #0d6efd;
-        }
-        .btn-outline-primary:hover {
-            background: #e7f1ff;
-        }
-        .border-primary-subtle {
-            border-color: #b6d4fe !important;
-        }
-        .bg-primary-subtle {
-            background-color: #e7f1ff !important;
-        }
-        .form-label.text-primary {
-            font-weight: 600;
-        }
-        .fw-bold.text-primary {
-            color: #0d6efd !important;
-        }
-        .action-link {
-            color: #0d6efd;
-        }
-        .action-link:hover {
-            color: #3b82f6;
-        }
-        /* End theme improvements */
-    </style>
-@endsection
+<style>
+    :root {
+        --main-blue: #1d3557;
+        --main-red: #e63946;
+        --main-white: #fff;
+        --main-light-blue: #e3eafc;
+        --main-light-red: #fde7eb;
+        --main-gray: #f1f3f5;
+        --main-dark: #22223b;
+    }
+    .violation-table {
+        border-radius: 1.1rem !important;
+        overflow: hidden;
+        box-shadow: 0 2px 12px 0 rgba(29,53,87,0.07);
+    }
+    .violation-table th, .violation-table td {
+        vertical-align: middle !important;
+        padding-top: 0.55rem !important;
+        padding-bottom: 0.55rem !important;
+        font-size: 1rem;
+    }
+    .violation-table td {
+        border-radius: 0.5rem !important;
+    }
+    .violation-table th {
+        background: var(--main-blue);
+        color: var(--main-white);
+        font-weight: 700;
+        border-bottom: 2.5px solid var(--main-red) !important;
+        letter-spacing: 0.03em;
+    }
+    .violation-table tr {
+        background: var(--main-white);
+        border-bottom: 1.5px solid var(--main-gray);
+        transition: background 0.2s;
+    }
+    .violation-table tbody tr:hover {
+        background: var(--main-light-blue);
+    }
+    .violation-table tr:last-child {
+        border-bottom: none;
+    }
+    .violation-table td {
+        color: var(--main-dark);
+    }
+    .violation-table .badge {
+        background: var(--main-light-blue);
+        color: var(--main-blue);
+        font-weight: 600;
+        border-radius: 0.35rem;
+        padding: 0.22rem 0.8rem;
+        font-size: 0.97em;
+        box-shadow: 0 1px 2px rgba(29,53,87,0.06);
+    }
+    .violation-table .action-btn {
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        border-radius: 50%;
+        background: var(--main-white);
+        border: 2px solid var(--main-blue);
+        color: var(--main-blue);
+        margin-right: 0.3rem;
+        transition: background 0.2s, color 0.2s, border 0.2s;
+        box-shadow: 0 1px 2px rgba(29,53,87,0.04);
+        padding: 0;
+    }
+    .violation-table .action-btn:last-child {
+        margin-right: 0;
+    }
+    .violation-table .action-btn.approve {
+        border-color: var(--main-blue);
+        color: var(--main-blue);
+        background: var(--main-light-blue);
+    }
+    .violation-table .action-btn.approve:hover {
+        background: var(--main-blue);
+        color: var(--main-white);
+        border-color: var(--main-blue);
+    }
+    .violation-table .action-btn.reject {
+        border-color: var(--main-red);
+        color: var(--main-red);
+        background: var(--main-light-red);
+    }
+    .violation-table .action-btn.reject:hover {
+        background: var(--main-red);
+        color: var(--main-white);
+        border-color: var(--main-red);
+    }
+    .violation-table .reporter-email {
+        font-size: 0.96em;
+        color: var(--main-blue);
+        font-weight: 500;
+    }
+    .violation-table .status-pending {
+        color: var(--main-red);
+        font-size: 0.97em;
+        font-weight: 600;
+    }
+    .violation-table .student-id {
+        font-weight: 700;
+        color: var(--main-blue);
+        font-size: 1.01em;
+    }
+    .violation-table .student-name {
+        font-weight: 600;
+        color: var(--main-dark);
+    }
+    .violation-table .date-cell {
+        color: #64748b;
+        font-size: 0.96em;
+    }
+    .violation-table .empty-row {
+        background: var(--main-light-blue);
+        border-radius: 0.7rem !important;
+    }
+</style>
 
-@section('sidebar')
-    @if(auth()->user()->hasRole('admin'))
-        @include('partials.sidebar-admin')
-    @elseif(auth()->user()->hasRole('professor'))
-        @include('partials.sidebar-professor')
-    @elseif(auth()->user()->hasRole('superadmin'))
-        @include('partials.sidebar-superadmin')
-    @elseif(auth()->user()->hasRole('disciplinary_committee'))
-        @include('partials.sidebar-disciplinary')
-    @endif
-@endsection
-
-@section('content')
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-semibold mb-0 text-primary">
-            <i class="bi bi-clipboard-data me-2"></i> Student Violations
-        </h4>
-        <small class="text-muted">Updated: {{ now()->format('M d, Y') }}</small>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0" style="color:#23272b;letter-spacing:0.01em;">Student Violations</h4>
+        <span class="text-muted small">Updated: {{ now()->format('F d, Y') }}</span>
     </div>
 
     @if (session('success'))
-        <div class="alert alert-success small d-flex align-items-center mb-4">
-            <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+        <div class="alert alert-success mb-3 px-4 py-2 rounded-3 shadow-sm" style="color:#23272b;background:#e2e6ea;border:1.5px solid #adb5bd;">
+            <span>{{ session('success') }}</span>
         </div>
     @endif
 
-    <!-- Inline Filter: Only by Type (Server-side) -->
-    <form method="GET" class="mb-3 d-flex align-items-center gap-2" action="">
-        <label for="typeFilter" class="form-label text-primary mb-0 me-2">Type:</label>
-        <select name="type" id="typeFilter" class="form-select form-select-sm w-auto border-primary-subtle" onchange="this.form.submit()">
-            <option value=""{{ request('type') == '' ? ' selected' : '' }}>All</option>
-            <option value="minor"{{ request('type') == 'minor' ? ' selected' : '' }}>Minor</option>
-            <option value="major"{{ request('type') == 'major' ? ' selected' : '' }}>Major</option>
-        </select>
-    </form>
-
-    <div class="table-responsive rounded border shadow-sm bg-white">
-        <table class="table table-hover align-middle mb-0" id="violationsTable">
-            <thead class="table-primary small text-uppercase">
+    <div class="table-responsive rounded-3 border shadow-sm bg-white p-2 font-roboto">
+        <table class="table violation-table mb-0">
+            <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
+                    <th class="text-center">Student</th>
+                    <th>Course</th>
                     <th>Violation</th>
-                    <th>Type</th>
-                    <th>Sanction</th>
-                    <th>Reporter</th>
+                    <th class="text-center">Offense</th>
+                    <th>Status</th>
                     <th>Date</th>
-                    <th>Action</th>
+                    <th class="text-center">Action</th>
                 </tr>
             </thead>
-    <tbody id="violationsTbody">
-        @php
-            $filtered = request('type') ? $violations->filter(function($v) {
-                return strtolower($v->offense_type) === request('type');
-            }) : $violations;
-        @endphp
-        @if($filtered->count())
-            @foreach ($filtered as $violation)
-                <tr data-type="{{ strtolower($violation->offense_type) }}">
-                    <td class="fw-bold text-primary">{{ $violation->student_id }}</td>
-                    <td class="fw-semibold text-dark">
-                        {{ $violation->last_name }}, {{ $violation->first_name }} {{ $violation->middle_name }}
-                    </td>
-                    <td class="text-wrap" style="max-width: 240px;">{{ $violation->violation }}</td>
-                    <td class="text-capitalize text-primary">{{ $violation->offense_type }}</td>
-                    <td>
-                        @if($violation->sanction)
-                            <span class="status-done">{{ $violation->sanction }}</span>
-                        @else
-                            <span class="status-pending">Pending</span>
-                        @endif
-                    </td>
-                    <td class="text-muted">{{ $violation->reporter->email ?? 'N/A' }}</td>
-                    <td class="text-muted small">{{ $violation->created_at->format('M d, Y') }}</td>
-                    <td>
-                        <a href="{{ route('disciplinary.edit', $violation->id) }}"
-                           class="action-link" title="{{ $violation->sanction ? 'Edit Sanction' : 'Apply Sanction' }}">
-                            <i class="bi bi-pencil-square me-1"></i>{{ $violation->sanction ? 'Edit' : 'Apply' }}
-                        </a>
-                    </td>
-                </tr>
-            @endforeach
-        @else
-            <tr class="no-data">
-                <td colspan="8" class="text-center py-5 text-muted">No violations found.</td>
-            </tr>
-        @endif
-    </tbody>
-</table>
+            <tbody>
+                @php
+                    $pendingViolations = \App\Models\StudentViolation::where('status', 'Pending')
+                        ->whereNotNull('Violation')
+                        ->where('Violation', '!=', '')
+                        ->latest()->get();
+                @endphp
+
+                @forelse($pendingViolations as $violation)
+                    @php
+                        $offenseLabel = $violation->Offense_Record ?? '1st Offense';
+                    @endphp
+                    <tr>
+                        <td class="student-name text-center">{{ $violation->Last_Name }}, {{ $violation->First_Name }} {{ $violation->Middle_Name }}</td>
+                        <td>{{ $violation->Course }} - {{ $violation->Year_and_Section }}</td>
+                        <td style="max-width:200px;white-space:normal;">{{ $violation->Violation }}</td>
+                        <td class="text-center">
+                            <span class="badge">{{ $offenseLabel }}</span>
+                        </td>
+                        <td>
+                            <span class="d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill text-xs fw-semibold bg-warning bg-opacity-10 text-warning border border-warning-subtle">
+                                <i class="bi bi-hourglass-split me-1"></i> Pending
+                            </span>
+                        </td>
+                        <td class="date-cell">
+                            {{ !empty($violation->created_at) ? \Carbon\Carbon::parse($violation->created_at)->format('M d, Y') : '' }}
+                        </td>
+                        <td class="text-center">
+                            <div class="d-inline-flex align-items-center gap-1">
+                                <form method="POST" action="{{ route('disciplinary.violation.action') }}" class="violation-action-form m-0 p-0">
+                                    @csrf
+                                    <input type="hidden" name="violation_id" value="{{ $violation->id }}">
+                                    <button type="submit" name="action" value="approve" class="action-btn approve me-1" data-label="Approve" title="Approve">
+                                        <i class="bi bi-check2-circle"></i>
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ route('disciplinary.violation.action') }}" class="violation-action-form m-0 p-0">
+                                    @csrf
+                                    <input type="hidden" name="violation_id" value="{{ $violation->id }}">
+                                    <button type="submit" name="action" value="reject" class="action-btn reject" data-label="Reject" title="Reject">
+                                        <i class="bi bi-x-circle-fill"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr class="empty-row">
+                        <td colspan="7" class="text-center py-4">
+                            <span class="fw-semibold text-secondary">No pending violations found.</span>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
-
-    @if (method_exists($violations, 'links'))
-        <div class="mt-4 d-flex justify-content-end small">
-            {{ $violations->links('pagination::bootstrap-5') }}
-        </div>
-    @endif
-
-    <!-- Scroll to Top Button -->
-    <button class="scroll-top" id="scrollTopBtn" title="Go to top">
-        <i class="bi bi-arrow-up-short"></i>
-    </button>
 </div>
-@endsection
-
-@section('scripts')
-<script>
-    // Scroll to top button visibility
-    const scrollTopBtn = document.getElementById("scrollTopBtn");
-    window.onscroll = function () {
-        if (document.documentElement.scrollTop > 150) {
-            scrollTopBtn.style.display = "block";
-        } else {
-            scrollTopBtn.style.display = "none";
-        }
-    };
-    scrollTopBtn.onclick = function () {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-</script>
-@endsection

@@ -25,11 +25,9 @@ class ViolationStatusView extends Component
     public function reject($id)
     {
         $violation = StudentViolation::findOrFail($id);
-        $violation->update(['status' => 'declined']); // ✅ fixed: quoted 'rejected'
-        
+        $violation->update(['status' => 'declined']);
         session()->flash('message', 'Violation has been rejected.');
     }
-
 
     public function delete($id)
     {

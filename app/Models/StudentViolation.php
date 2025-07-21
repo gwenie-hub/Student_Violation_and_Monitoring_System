@@ -9,22 +9,23 @@ class StudentViolation extends Model
 {
     use HasFactory;
 
-    // Explicit table definition (optional)
-    protected $table = 'student_violations';
-    protected $dates = ['archived_at'];
+    // Connect to student_records table
+    protected $table = 'student_records';
 
     protected $fillable = [
-        'student_id',
-        'reported_by',
-        'last_name',
-        'first_name',
-        'middle_name',
-        'course',
-        'year_section',
-        'violation',
-        'offense_type',
-        'status',
-        'sanction',
+        'Student_ID',
+        'First_Name',
+        'Middle_Name',
+        'Last_Name',
+        'Course',
+        'Major',
+        'Year_and_Section',
+        'Student_Email',
+        'Parent_Email',
+        'Violation',
+        'Offense_Record',
+        'Sanction',
+        'Notify_Status',
     ];
 
     /**
